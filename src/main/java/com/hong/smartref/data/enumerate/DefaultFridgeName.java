@@ -5,40 +5,40 @@ import lombok.Getter;
 import java.util.Random;
 
 @Getter
-public enum DefaultUserName {
-    default_username_1("default_username_1"),
-    default_username_2("default_username_2"),
-    default_username_3("default_username_3"),
-    default_username_4("default_username_4"),
-    default_username_5("default_username_5"),
-    default_username_6("default_username_6"),
-    default_username_7("default_username_7"),
-    default_username_8("default_username_8"),
-    default_username_9("default_username_9"),
-    default_username_10("default_username_10"),
-    default_username_11("default_username_11"),
-    default_username_12("default_username_12"),
-    default_username_13("default_username_13"),
-    default_username_14("default_username_14"),
-    default_username_15("default_username_15"),
-    default_username_16("default_username_16"),
-    default_username_17("default_username_17"),
-    default_username_18("default_username_18"),
-    default_username_19("default_username_19"),
-    default_username_20("default_username_20");
+public enum DefaultFridgeName {
+    default_fridgeName_1("default_fridgeName_1"),
+    default_fridgeName_2("default_fridgeName_2"),
+    default_fridgeName_3("default_fridgeName_3"),
+    default_fridgeName_4("default_fridgeName_4"),
+    default_fridgeName_5("default_fridgeName_5"),
+    default_fridgeName_6("default_fridgeName_6"),
+    default_fridgeName_7("default_fridgeName_7"),
+    default_fridgeName_8("default_fridgeName_8"),
+    default_fridgeName_9("default_fridgeName_9"),
+    default_fridgeName_10("default_fridgeName_10"),
+    default_fridgeName_11("default_fridgeName_11"),
+    default_fridgeName_12("default_fridgeName_12"),
+    default_fridgeName_13("default_fridgeName_13"),
+    default_fridgeName_14("default_fridgeName_14"),
+    default_fridgeName_15("default_fridgeName_15"),
+    default_fridgeName_16("default_fridgeName_16"),
+    default_fridgeName_17("default_fridgeName_17"),
+    default_fridgeName_18("default_fridgeName_18"),
+    default_fridgeName_19("default_fridgeName_19"),
+    default_fridgeName_20("default_fridgeName_20");
 
 
-    private final String defaultUserName;
+    private final String defaultFridgeName;
 
-    DefaultUserName(String defaultUserName) {
-        this.defaultUserName = defaultUserName;
+    DefaultFridgeName(String defaultFridgeName) {
+        this.defaultFridgeName = defaultFridgeName;
     }
 
     private static final Random RANDOM = new Random();
 
-    public static String getRandomBackGroundImage() {
-        DefaultUserName[] values = DefaultUserName.values();
+    public static String getRandomFridgeName() {
+        DefaultFridgeName[] values = DefaultFridgeName.values();
         int randomIndex = RANDOM.nextInt(values.length);
-        return values[randomIndex].defaultUserName;
+        return values[randomIndex].defaultFridgeName;
     }
 }

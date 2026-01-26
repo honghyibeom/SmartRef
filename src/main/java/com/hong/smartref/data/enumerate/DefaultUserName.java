@@ -5,30 +5,40 @@ import lombok.Getter;
 import java.util.Random;
 
 @Getter
-public enum DefaultColor {
-    default_color_1("default_color_1"),
-    default_color_2("default_color_2"),
-    default_color_3("default_color_3"),
-    default_color_4("default_color_4"),
-    default_color_5("default_color_5"),
-    default_color_6("default_color_6"),
-    default_color_7("default_color_7"),
-    default_color_8("default_color_8"),
-    default_color_9("default_color_9"),
-    default_color_10("default_color_10");
+public enum DefaultUserName {
+    default_username_1("default_username_1"),
+    default_username_2("default_username_2"),
+    default_username_3("default_username_3"),
+    default_username_4("default_username_4"),
+    default_username_5("default_username_5"),
+    default_username_6("default_username_6"),
+    default_username_7("default_username_7"),
+    default_username_8("default_username_8"),
+    default_username_9("default_username_9"),
+    default_username_10("default_username_10"),
+    default_username_11("default_username_11"),
+    default_username_12("default_username_12"),
+    default_username_13("default_username_13"),
+    default_username_14("default_username_14"),
+    default_username_15("default_username_15"),
+    default_username_16("default_username_16"),
+    default_username_17("default_username_17"),
+    default_username_18("default_username_18"),
+    default_username_19("default_username_19"),
+    default_username_20("default_username_20");
 
 
-    private final String defaultColor;
+    private final String defaultUserName;
 
-    DefaultColor(String defaultColor) {
-        this.defaultColor = defaultColor;
+    DefaultUserName(String defaultUserName) {
+        this.defaultUserName = defaultUserName;
     }
 
     private static final Random RANDOM = new Random();
 
-    public static String getRandomBackGroundImage() {
-        DefaultColor[] values = DefaultColor.values();
+    public static String getRandomUserName() {
+        DefaultUserName[] values = DefaultUserName.values();
         int randomIndex = RANDOM.nextInt(values.length);
-        return values[randomIndex].defaultColor;
+        return values[randomIndex].defaultUserName;
     }
 }

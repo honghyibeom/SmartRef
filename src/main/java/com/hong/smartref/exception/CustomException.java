@@ -1,4 +1,4 @@
-package myproject.cliposerver.exception;
+package com.hong.smartref.exception;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

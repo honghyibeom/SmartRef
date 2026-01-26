@@ -1,11 +1,11 @@
-package myproject.cliposerver.config;
+package com.hong.smartref.config;
 
+import com.hong.smartref.config.jwt.JwtAccessDeniedHandler;
+import com.hong.smartref.config.jwt.JwtAuthenticationEntryPoint;
+import com.hong.smartref.config.jwt.JwtFilter;
+import com.hong.smartref.config.jwt.JwtTokenUtil;
+import com.hong.smartref.config.security.CorsConfig;
 import lombok.RequiredArgsConstructor;
-import myproject.cliposerver.config.jwt.JwtAccessDeniedHandler;
-import myproject.cliposerver.config.jwt.JwtAuthenticationEntryPoint;
-import myproject.cliposerver.config.jwt.JwtFilter;
-import myproject.cliposerver.config.jwt.JwtTokenUtil;
-import myproject.cliposerver.config.security.CorsConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -21,7 +21,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @RequiredArgsConstructor
@@ -60,12 +59,12 @@ public class SecurityConfig {
         http.csrf(Customizer.withDefaults())
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(
-                                new AntPathRequestMatcher("/api/auth/**"),
-                                new AntPathRequestMatcher("/error"),
-                                new AntPathRequestMatcher("/h2-console/**"),
-                                new AntPathRequestMatcher("/swagger-ui/**"),
-                                new AntPathRequestMatcher("/api-docs/**"),
-                                new AntPathRequestMatcher("/api/notification/activity/subscribe/**")
+                                "/api/auth/**",
+                                "/error",
+                                "/h2-console/**",
+                                "/swagger-ui/**",
+                                "/api-docs/**",
+                                "/api/notification/activity/subscribe/**"
                         ).permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(new JwtFilter(jwtTokenUtil), UsernamePasswordAuthenticationFilter.class)
@@ -100,9 +99,9 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.OPTIONS,"/**").permitAll()
                         .requestMatchers(
-                                new AntPathRequestMatcher("/api/auth/**"),
-                                new AntPathRequestMatcher("/error"),
-                                new AntPathRequestMatcher("/api/notification/activity/subscribe/**")
+                                "/api/auth/**",
+                                "/error",
+                                "/api/notification/activity/subscribe/**"
                         ).permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(new JwtFilter(jwtTokenUtil), UsernamePasswordAuthenticationFilter.class)

@@ -1,4 +1,4 @@
-package myproject.cliposerver.config;
+package com.hong.smartref.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -32,4 +32,6 @@ public class MailConfig {
         properties.setProperty("mail.smtp.ssl.enable", "true"); // ssl 사용
         return properties;
     }
+
+
 }

@@ -7,9 +7,7 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class SignupRequest {
-    @Email(message = "do not match email form")
-    @NotBlank(message = "email cannot be blank")
+public class LoginRequest {
     private String email;
     private String password;
 }

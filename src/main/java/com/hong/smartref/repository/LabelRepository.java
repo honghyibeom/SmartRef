@@ -1,4 +1,9 @@
 package com.hong.smartref.repository;
 
-public interface LabelRepository {
+import com.hong.smartref.data.entity.Label;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface LabelRepository extends JpaRepository<Label, Long> {
 }

@@ -1,13 +1,13 @@
-package myproject.cliposerver.config.jwt;
+package com.hong.smartref.config.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.hong.smartref.exception.CustomExceptionDTO;
+import com.hong.smartref.exception.ErrorCode;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import myproject.cliposerver.exception.CustomExceptionDTO;
-import myproject.cliposerver.exception.ErrorCode;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;
