@@ -63,7 +63,7 @@ public class SecurityConfig {
                                 "/error",
                                 "/h2-console/**",
                                 "/swagger-ui/**",
-                                "/api-docs/**",
+                                "/v3/api-docs/**",
                                 "/api/notification/activity/subscribe/**"
                         ).permitAll()
                         .anyRequest().authenticated())

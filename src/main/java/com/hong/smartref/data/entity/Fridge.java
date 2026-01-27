@@ -1,5 +1,7 @@
 package com.hong.smartref.data.entity;
 
+import com.hong.smartref.data.enumerate.DefaultColor;
+import com.hong.smartref.data.enumerate.DefaultFridgeName;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,7 +17,6 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class Fridge {
 
     @Id
@@ -37,6 +38,17 @@ public class Fridge {
     @OneToMany(mappedBy = "fridge", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<FridgeUser> fridgeUserList = new ArrayList<>();
 
+    public static Fridge create(
+            String fridgeName,
+            String fridgeColor
+    ) {
+        Fridge fridge = new Fridge();
+        fridge.fridgeName = fridgeName == null ? DefaultFridgeName.getRandomFridgeName() : fridgeName;
+        fridge.fridgeColor = fridgeColor == null ? DefaultColor.getRandomColor() :fridgeColor;
+        fridge.createdAt = LocalDateTime.now();
+
+        return fridge;
+    }
 
 }
 

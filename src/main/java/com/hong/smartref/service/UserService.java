@@ -2,18 +2,21 @@ package com.hong.smartref.service;
 
 import com.hong.smartref.config.MailService;
 import com.hong.smartref.config.jwt.JwtTokenUtil;
-import com.hong.smartref.config.security.UserDetailsImpl;
-import com.hong.smartref.data.dto.user.LoginRequest;
-import com.hong.smartref.data.dto.user.LoginResponse;
-import com.hong.smartref.data.dto.user.ReissueResponse;
-import com.hong.smartref.data.dto.user.SignupRequest;
+import com.hong.smartref.data.dto.user.*;
+import com.hong.smartref.data.entity.Fridge;
+import com.hong.smartref.data.entity.FridgeUser;
 import com.hong.smartref.data.entity.User;
 import com.hong.smartref.exception.CustomException;
 import com.hong.smartref.exception.ErrorCode;
+import com.hong.smartref.repository.FridgeRepository;
+import com.hong.smartref.repository.FridgeUserRepository;
 import com.hong.smartref.repository.UserRepository;
 import jakarta.mail.MessagingException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.http.HttpHeaders;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -36,8 +39,8 @@ public class UserService {
     private static final long REFRESH_TOKEN_TTL =
             60L * 24 * 60 * 60; // 60일
     private final MailService mailService;
-    private JavaMailSender mailSender;
-    private String ePw;
+    private final FridgeRepository fridgeRepository;
+    private final FridgeUserRepository fridgeUserRepository;
 
     @Transactional
     public void signup(SignupRequest signupRequest) {
@@ -49,7 +52,17 @@ public class UserService {
         User user = User.create(
             signupRequest.getEmail(), passwordEncoder.encode(signupRequest.getPassword()));
 
-        userRepository.save(user);
+        User resultUser = userRepository.save(user);
+
+        //디폴트 냉장고, 팬트리 생성
+        Fridge fridge = Fridge.create(null, null);
+
+        Fridge resultFri = fridgeRepository.save(fridge);
+
+        FridgeUser fridgeUser1 = FridgeUser.create(resultUser, resultFri);
+
+        fridgeUserRepository.save(fridgeUser1);
+
     }
 
     public LoginResponse login(LoginRequest loginRequest) {
@@ -59,6 +72,7 @@ public class UserService {
         if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
             throw new CustomException(ErrorCode.NOT_EQUALS_PASSWORD);
         }
+
         if (!user.isValid()) {
             throw new CustomException(ErrorCode.NOT_VALIDATE_USER);
         }
@@ -76,12 +90,11 @@ public class UserService {
                 .build();
     }
 
-    public ReissueResponse reissueAccessToken(
-            String email,
-            String refreshToken
-    ) {
+    public ReissueResponse reissueAccessToken(String email, HttpServletRequest request) {
         String normalizedEmail = email.toLowerCase();
         String redisKey = "refresh:email:" + normalizedEmail;
+
+        String refreshToken = request.getHeader(HttpHeaders.AUTHORIZATION);
 
         // 1️⃣ Redis에서 Refresh Token 조회
         String savedRefreshToken = redisTemplate.opsForValue().get(redisKey);
@@ -116,12 +129,44 @@ public class UserService {
     public String userCertificationSend (String email) throws MessagingException, UnsupportedEncodingException {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(()-> new CustomException(ErrorCode.NOT_EXIST_USER));
-        return mailService.sendSimpleMessage(user.getEmail());
+
+        // 1️⃣ 메일 전송 & 코드 생성
+        String code = mailService.sendSimpleMessage(user.getEmail());
+
+        // 2️⃣ Redis 저장 (5분)
+        String redisKey = "email:cert:" + user.getEmail();
+        redisTemplate.opsForValue().set(
+                redisKey,
+                code,
+                5,
+                TimeUnit.MINUTES
+        );
+
+        return code; // (보통은 반환 안 함, 테스트용이면 OK)
     }
 
-    public void userCertification (String email) {
-        User user = userRepository.findByEmail(email)
+    public void userCertification (MailCheckRequest mailCheckRequest) {
+        User user = userRepository.findByEmail(mailCheckRequest.getEmail())
                 .orElseThrow(()-> new CustomException(ErrorCode.NOT_EXIST_USER));
+
+        String redisKey = "email:cert:" + user.getEmail();
+
+        // 1️⃣ Redis에서 코드 조회
+        String savedCode = redisTemplate.opsForValue().get(redisKey);
+
+        if (savedCode == null) {
+            throw new CustomException(ErrorCode.EXPIRED_CERT_CODE);
+        }
+
+        // 2️⃣ 코드 비교
+        if (!savedCode.equals(mailCheckRequest.getCode())) {
+            throw new CustomException(ErrorCode.INVALID_CERT_CODE);
+        }
+
+        // 3️⃣ 인증 성공 → Redis 삭제
+        redisTemplate.delete(redisKey);
+
+        // 4️⃣ 유저 인증 완료
         user.setValid(true);
         userRepository.save(user);
     }

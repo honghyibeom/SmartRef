@@ -21,7 +21,7 @@ public class MailService {
 
         MimeMessage message = javaMailSender.createMimeMessage();
         message.addRecipients(Message.RecipientType.TO, to); // 메일 받을 사용자
-        message.setSubject("[Clipo] 비밀번호 변경을 위한 이메일 인증코드 입니다.");// 메일 제목
+        message.setSubject("[똑똑 냉장고] 본인 확인을 위한 이메일 인증코드 입니다.");// 메일 제목
         String form = msgg();
         message.setText(form, "utf-8", "html"); // 메일 내용, charset타입, subtype
         // 보내는 사람의 이메일 주소, 보내는 사람 이름
@@ -66,11 +66,11 @@ public class MailService {
         msgg += "<h1>안녕하세요</h1>";
         msgg += "<h1>똑똑냉장고 입니다</h1>";
         msgg += "<br>";
-        msgg += "<p>임시 비밀번호 입니다. 아래 비밀번호로 로그인 하시길 바랍니다.</p>";
+        msgg += "<p>인증 코드 입니다. 아래 코드로 본인 확인 하시길 바랍니다.</p>";
         msgg += "<br>";
         msgg += "<br>";
         msgg += "<div align='center' style='border:1px solid black'>";
-        msgg += "<h3 style='color:blue'>변경될 비밀번호 입니다.</h3>";
+        msgg += "<h3 style='color:blue'>코드 입니다.</h3>";
         msgg += "<div style='font-size:130%'>";
         msgg += "<strong>" + ePw + "</strong></div><br/>" ; // 메일에 인증번호 ePw 넣기
         msgg += "</div>";

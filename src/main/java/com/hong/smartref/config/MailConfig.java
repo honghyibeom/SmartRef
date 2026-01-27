@@ -9,29 +9,34 @@ import java.util.Properties;
 
 @Configuration
 public class MailConfig {
+
     @Bean
     public JavaMailSender naverMailService() {
-        JavaMailSenderImpl javaMailSender = new JavaMailSenderImpl();
-        javaMailSender.setHost("smtp.naver.com"); // SMTP 서버명
-        javaMailSender.setUsername("ghdgmlqja1"); // 네이버 아이디
-        javaMailSender.setPassword("apcarry123"); // 네이버 비밀번호
-        javaMailSender.setPort(465);
+        JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+        mailSender.setHost("smtp.naver.com");
+        mailSender.setPort(465);
 
-        javaMailSender.setJavaMailProperties(getMailProperties());
-        return javaMailSender;
+        // ✅ 반드시 이메일 전체
+        mailSender.setUsername("ghdgmlqja1@naver.com");
+
+        // ✅ 반드시 네이버 앱 비밀번호
+        mailSender.setPassword("UY2SDS26B1VW");
+
+        mailSender.setJavaMailProperties(mailProperties());
+        return mailSender;
     }
 
-    // 메일 인증서버 정보 가져오기
-    private Properties getMailProperties(){
-        Properties properties = new Properties();
-        properties.setProperty("mail.transport.protocol", "smtp"); // 프로토콜 설정
-        properties.setProperty("mail.smtp.auth", "true"); // smtp 인증
-        properties.setProperty("mail.smtp.starttls.enable", "true"); // smtp strattles 사용
-        properties.setProperty("mail.debug", "true"); // 디버그 사용
-        properties.setProperty("mail.smtp.ssl.trust", "smtp.naver.com"); // ssl 인증 서버 (smtp 서버명)
-        properties.setProperty("mail.smtp.ssl.enable", "true"); // ssl 사용
-        return properties;
+    private Properties mailProperties() {
+        Properties props = new Properties();
+        props.put("mail.transport.protocol", "smtp");
+        props.put("mail.smtp.auth", "true");
+
+        // ✅ 465는 SSL 전용
+        props.put("mail.smtp.ssl.enable", "true");
+        props.put("mail.smtp.starttls.enable", "false");
+
+        props.put("mail.smtp.ssl.trust", "smtp.naver.com");
+        props.put("mail.debug", "true");
+        return props;
     }
-
-
 }

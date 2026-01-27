@@ -18,7 +18,6 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class User {
 
     @Id
@@ -69,6 +68,7 @@ public class User {
         user.nickname = DefaultUserName.getRandomUserName();
         user.nicknameColor = DefaultColor.getRandomColor();
         user.locationName = null;
+        user.role = Role.USER;
 
         // 기본 정책
         user.isPremium = false;

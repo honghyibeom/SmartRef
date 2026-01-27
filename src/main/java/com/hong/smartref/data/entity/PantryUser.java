@@ -3,7 +3,6 @@ package com.hong.smartref.data.entity;
 import com.hong.smartref.data.enumerate.FridgeRole;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -13,21 +12,21 @@ import java.time.LocalDateTime;
 @Table(
         name = "fridge_user",
         uniqueConstraints = {
-                @UniqueConstraint(columnNames = {"fridge_id", "user_id"})
+                @UniqueConstraint(columnNames = {"pantry_id", "user_id"})
         }
 )
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class FridgeUser {
+public class PantryUser {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long fridgeUserId;
+    private Long pantryUserId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "fridge_id", nullable = false)
-    private Fridge fridge;
+    @JoinColumn(name = "pantry_id", nullable = false)
+    private Pantry pantry;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
@@ -40,10 +39,10 @@ public class FridgeUser {
     @Column(nullable = false, updatable = false)
     private LocalDateTime joinedAt;
 
-    public static FridgeUser create(User user, Fridge fridge) {
-        FridgeUser newFridgeUser = new FridgeUser();
+    public static PantryUser create(User user, Pantry pantry) {
+        PantryUser newFridgeUser = new PantryUser();
         newFridgeUser.user = user;
-        newFridgeUser.fridge = fridge;
+        newFridgeUser.pantry = pantry;
         return newFridgeUser;
     }
 }

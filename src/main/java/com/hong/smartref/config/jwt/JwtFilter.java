@@ -39,6 +39,16 @@ public class JwtFilter extends OncePerRequestFilter {
             FilterChain filterChain
     ) throws ServletException, IOException {
 
+        String uri = request.getRequestURI();
+
+        // ✅ Swagger & OpenAPI 예외 처리
+        if (uri.startsWith("/swagger-ui")
+                || uri.startsWith("/v3/api-docs")) {
+
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         String token = jwtTokenUtil.resolveToken(request);
 
         if (token != null) {
