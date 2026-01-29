@@ -24,7 +24,6 @@ import java.util.UUID;
 public class JwtTokenUtil {
     private final UserDetailsServiceImpl userDetailsService;
     private final SecretKey secretKey;
-
     public static final String AUTHORIZATION_KEY = "auth";
 
     public JwtTokenUtil(

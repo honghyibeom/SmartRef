@@ -6,6 +6,7 @@ import lombok.Getter;
 @Getter
 @Builder
 public class FridgeRequest {
+    private Long refNo;
     private String refName;
     private String refColor;
 }

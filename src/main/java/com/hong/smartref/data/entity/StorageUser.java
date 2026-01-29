@@ -1,32 +1,34 @@
 package com.hong.smartref.data.entity;
 
-import com.hong.smartref.data.enumerate.FridgeRole;
+import com.hong.smartref.data.enumerate.StorageRole;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table(
-        name = "fridge_user",
+        name = "storage_user",
         uniqueConstraints = {
-                @UniqueConstraint(columnNames = {"pantry_id", "user_id"})
+                @UniqueConstraint(columnNames = {"storage_id", "user_id"})
         }
 )
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class PantryUser {
+public class StorageUser {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long pantryUserId;
+    private Long storageUserId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "pantry_id", nullable = false)
-    private Pantry pantry;
+    @JoinColumn(name = "storage_id", nullable = false)
+    private Storage storage;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
@@ -34,15 +36,16 @@ public class PantryUser {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private FridgeRole role;
+    private StorageRole role;
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime joinedAt;
 
-    public static PantryUser create(User user, Pantry pantry) {
-        PantryUser newFridgeUser = new PantryUser();
+    public static StorageUser create(User user, Storage storage) {
+        StorageUser newFridgeUser = new StorageUser();
         newFridgeUser.user = user;
-        newFridgeUser.pantry = pantry;
+        newFridgeUser.storage = storage;
+        newFridgeUser.role = StorageRole.OWNER;
         return newFridgeUser;
     }
 }

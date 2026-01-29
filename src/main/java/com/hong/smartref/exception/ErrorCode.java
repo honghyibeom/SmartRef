@@ -15,7 +15,7 @@ public enum ErrorCode {
     NOT_VALIDATE_TOKEN("유효한 토큰이 아닙니다.", HttpStatus.BAD_REQUEST),
     NOT_VALIDATE_REFRESH_TOKEN("유효한 리프레시 토큰이 아닙니다.", HttpStatus.BAD_REQUEST),
     EXIST_NICKNAME("같은 닉네임이 존재 합니다.", HttpStatus.BAD_REQUEST),
-    NOT_EXIST_BOARD("존재하지 않는 게시글",HttpStatus.BAD_REQUEST),
+    NOT_EXIST_FRIDGE("존재하지 않는 냉장고",HttpStatus.BAD_REQUEST),
     NOT_EXIST_REPLY("존재하지 않는 댓글",HttpStatus.BAD_REQUEST),
     NOT_EXIST_NOTIFICATION("존재하지 않는 알림",HttpStatus.BAD_REQUEST),
     NOT_EXIST_FOLLOW("팔로우가 되어있지 않습니다.",HttpStatus.BAD_REQUEST),
@@ -40,6 +40,7 @@ public enum ErrorCode {
     UPLOAD_LIMIT_EXCEEDED("업로드한 이미지 갯수 초과", HttpStatus.BAD_REQUEST),
     BUCKET_FULL("버킷 100GB 초과 관리자 문의", HttpStatus.BAD_REQUEST),
     EXPIRED_CERT_CODE("이메일 인증코드 시간 초과", HttpStatus.BAD_REQUEST),
+    NO_AUTHORITY("냉장고 주인이 아닙니다.", HttpStatus.BAD_REQUEST),
     INVALID_CERT_CODE("이메일 인증코드 불일치", HttpStatus.BAD_REQUEST);
 
 

@@ -1,8 +1,12 @@
 package com.hong.smartref.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.hong.smartref.config.security.UserDetailsImpl;
 import com.hong.smartref.data.dto.ApiResponse;
 import com.hong.smartref.data.dto.user.*;
+import com.hong.smartref.service.GoogleLoginService;
+import com.hong.smartref.service.KakaoLoginService;
+import com.hong.smartref.service.NaverLoginService;
 import com.hong.smartref.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.mail.MessagingException;
@@ -14,12 +18,16 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.UnsupportedEncodingException;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
 public class UserController {
     private final UserService userService;
+    private final GoogleLoginService googleLoginService;
+    private final KakaoLoginService kakaoLoginService;
+    private final NaverLoginService naverLoginService;
 
     @Operation(summary = "회원 가입 api", description = "유저 정보를 저장")
     @PostMapping("/auth/signup")
@@ -63,5 +71,20 @@ public class UserController {
         return ResponseEntity.ok(
                 ApiResponse.success("토큰 재발급", userService.reissueAccessToken(email, request))
         );
+    }
+
+
+    //소셜로그인
+    @PostMapping("/auth/socialLogin")
+    public ResponseEntity<ApiResponse<LoginResponse>> socialLogin(@RequestBody SocialLoginRequest socialLoginRequest) throws JsonProcessingException {
+        return switch (socialLoginRequest.getCode()) {
+            case "kakao" ->
+                    ResponseEntity.ok(ApiResponse.success("카카오 소셜 로그인", kakaoLoginService.login(socialLoginRequest)));
+            case "google" ->
+                    ResponseEntity.ok(ApiResponse.success("구글 소셜 로그인", googleLoginService.login(socialLoginRequest)));
+            case "naver" ->
+                    ResponseEntity.ok(ApiResponse.success("네이버 소셜 로그인", naverLoginService.login(socialLoginRequest)));
+            default -> ResponseEntity.ok(ApiResponse.fail("code 잘못 줌", null));
+        };
     }
 }

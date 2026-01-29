@@ -3,21 +3,16 @@ package com.hong.smartref.service;
 import com.hong.smartref.config.MailService;
 import com.hong.smartref.config.jwt.JwtTokenUtil;
 import com.hong.smartref.data.dto.user.*;
-import com.hong.smartref.data.entity.Fridge;
-import com.hong.smartref.data.entity.FridgeUser;
+import com.hong.smartref.data.entity.Storage;
 import com.hong.smartref.data.entity.User;
 import com.hong.smartref.exception.CustomException;
 import com.hong.smartref.exception.ErrorCode;
-import com.hong.smartref.repository.FridgeRepository;
-import com.hong.smartref.repository.FridgeUserRepository;
 import com.hong.smartref.repository.UserRepository;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpHeaders;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,8 +34,6 @@ public class UserService {
     private static final long REFRESH_TOKEN_TTL =
             60L * 24 * 60 * 60; // 60일
     private final MailService mailService;
-    private final FridgeRepository fridgeRepository;
-    private final FridgeUserRepository fridgeUserRepository;
 
     @Transactional
     public void signup(SignupRequest signupRequest) {
@@ -54,14 +47,7 @@ public class UserService {
 
         User resultUser = userRepository.save(user);
 
-        //디폴트 냉장고, 팬트리 생성
-        Fridge fridge = Fridge.create(null, null);
-
-        Fridge resultFri = fridgeRepository.save(fridge);
-
-        FridgeUser fridgeUser1 = FridgeUser.create(resultUser, resultFri);
-
-        fridgeUserRepository.save(fridgeUser1);
+        //디폴트 냉장고 생성
 
     }
 

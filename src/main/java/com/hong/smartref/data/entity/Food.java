@@ -25,8 +25,8 @@ public class Food {
     private Long foodId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "fridge_id", nullable = false)
-    private Fridge fridge;
+    @JoinColumn(name = "storage_id", nullable = false)
+    private Storage storage;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "label_id")
@@ -45,9 +45,9 @@ public class Food {
 
     private LocalDate expiredAt;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private LocationType locationType;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "location_id")
+    private Location location;
 
     private String imageUrl;
 

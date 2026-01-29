@@ -23,7 +23,7 @@ public class User {
     @Id
     private String email;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String password;
 
     @Column(nullable = false)
@@ -53,7 +53,7 @@ public class User {
     private List<FoodFavorite> foodFavoriteList = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<FridgeUser> fridgeUserList = new ArrayList<>();
+    private List<StorageUser> storageUserList = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Recipe> recipeList = new ArrayList<>();
