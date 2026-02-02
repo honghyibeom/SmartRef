@@ -1,8 +1,8 @@
 package com.hong.smartref.data.entity;
 
 import com.hong.smartref.data.enumerate.DefaultColor;
-import com.hong.smartref.data.enumerate.DefaultFridgeName;
-import com.hong.smartref.data.enumerate.StorageRole;
+import com.hong.smartref.data.enumerate.DefaultStorageColor;
+import com.hong.smartref.data.enumerate.DefaultStorageName;
 import com.hong.smartref.data.enumerate.StorageType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -45,13 +45,13 @@ public class Storage {
     private List<StorageUser> storageUserList = new ArrayList<>();
 
     public static Storage create(
-            String fridgeName,
-            String fridgeColor,
+            String storageName,
+            String storageColor,
             StorageType storageType
     ) {
         Storage storage = new Storage();
-        storage.storageName = fridgeName == null ? DefaultFridgeName.getRandomFridgeName() : fridgeName;
-        storage.storageColor = fridgeColor == null ? DefaultColor.getRandomColor() :fridgeColor;
+        storage.storageName = storageName;
+        storage.storageColor = storageColor;
         storage.storageType = storageType;
         storage.createdAt = LocalDateTime.now();
         return storage;

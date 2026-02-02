@@ -46,6 +46,7 @@ public class StorageUser {
         newFridgeUser.user = user;
         newFridgeUser.storage = storage;
         newFridgeUser.role = StorageRole.OWNER;
+        newFridgeUser.joinedAt = LocalDateTime.now();
         return newFridgeUser;
     }
 }

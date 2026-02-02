@@ -38,6 +38,7 @@ public class JwtFilter extends OncePerRequestFilter {
             HttpServletResponse response,
             FilterChain filterChain
     ) throws ServletException, IOException {
+        //log.info("🔥 JwtFilter HIT - URI: {}", request.getRequestURI());
 
         String uri = request.getRequestURI();
 
@@ -50,6 +51,7 @@ public class JwtFilter extends OncePerRequestFilter {
         }
 
         String token = jwtTokenUtil.resolveToken(request);
+        //log.info("🧪 resolved token = {}", token);
 
         if (token != null) {
             try {

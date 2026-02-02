@@ -29,4 +29,11 @@ public class FoodFavorite {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "food_id", nullable = false)
     private Food food;
+
+    public static FoodFavorite create(User user, Food food) {
+        FoodFavorite foodFavorite = new FoodFavorite();
+        foodFavorite.user = user;
+        foodFavorite.food = food;
+        return foodFavorite;
+    }
 }

@@ -25,5 +25,5 @@ public class Label {
 
     @OneToMany(mappedBy = "label", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Food> foodList = new ArrayList<>();
-}
 
+}

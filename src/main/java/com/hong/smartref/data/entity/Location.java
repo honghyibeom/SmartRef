@@ -6,6 +6,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "location")
 @Getter
@@ -17,12 +20,13 @@ public class Location {
     private Long locationId;
 
     @Column
-    private StorageType storageType;
-
-    @Column
     private String locationName;
 
     @Column
     private String locationColor;
+
+    @OneToMany(mappedBy = "location", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Food> foodList = new ArrayList<>();
+
 
 }

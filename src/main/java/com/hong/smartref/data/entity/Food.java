@@ -1,12 +1,11 @@
 package com.hong.smartref.data.entity;
 
-import com.hong.smartref.data.enumerate.FoodType;
-import com.hong.smartref.data.enumerate.LocationType;
+import com.hong.smartref.data.enumerate.AmountType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -16,6 +15,7 @@ import java.util.List;
 @Entity
 @Table(name = "food")
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Food {
@@ -37,7 +37,7 @@ public class Food {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private FoodType foodType;
+    private AmountType amountType;
 
     private Double quantity;
 
@@ -58,5 +58,33 @@ public class Food {
 
     @OneToMany(mappedBy = "food", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<FoodFavorite> foodFavoriteList = new ArrayList<>();
+
+
+    public static Food create(
+            Storage storage,
+            Label label,
+            String name,
+            AmountType amountType,
+            Double quantity,
+            String unit,
+            LocalDate expiredAt,
+            Location location,
+            String imageUrl,
+            String memo
+    ) {
+        Food food = new Food();
+        food.storage = storage;
+        food.label = label;
+        food.name = name;
+        food.amountType = amountType;
+        food.quantity = quantity;
+        food.unit = unit;
+        food.expiredAt = expiredAt;
+        food.location = location;
+        food.imageUrl = imageUrl;
+        food.memo = memo;
+        return food;
+    }
+
 }
 

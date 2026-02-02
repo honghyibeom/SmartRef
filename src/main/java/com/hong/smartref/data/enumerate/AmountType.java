@@ -1,6 +1,6 @@
 package com.hong.smartref.data.enumerate;
 
-public enum FoodType {
+public enum AmountType {
     QUANTITY,
     AMOUNT,
     METHOD

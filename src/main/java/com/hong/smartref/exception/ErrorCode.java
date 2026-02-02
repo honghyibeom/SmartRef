@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 public enum ErrorCode {
 
     NOT_EXIST_USER("사용자가 존재하지 않습니다.", HttpStatus.BAD_REQUEST),
+    NOT_EXIST_FOOD("음식이 존재하지 않습니다.", HttpStatus.BAD_REQUEST),
+    NOT_EXIST_STORAGE_USER("사용자의 냉장고가 존재하지 않습니다.", HttpStatus.BAD_REQUEST),
     NOT_EQUALS_USER("사용자가 일지하지 않습니다.", HttpStatus.BAD_REQUEST),
     EXIST_USER("중복된 사용자가 존재합니다.", HttpStatus.BAD_REQUEST),
     NOT_EQUALS_PASSWORD("비밀번호가 일치하지 않습니다.", HttpStatus.BAD_REQUEST),
@@ -15,10 +17,10 @@ public enum ErrorCode {
     NOT_VALIDATE_TOKEN("유효한 토큰이 아닙니다.", HttpStatus.BAD_REQUEST),
     NOT_VALIDATE_REFRESH_TOKEN("유효한 리프레시 토큰이 아닙니다.", HttpStatus.BAD_REQUEST),
     EXIST_NICKNAME("같은 닉네임이 존재 합니다.", HttpStatus.BAD_REQUEST),
-    NOT_EXIST_FRIDGE("존재하지 않는 냉장고",HttpStatus.BAD_REQUEST),
-    NOT_EXIST_REPLY("존재하지 않는 댓글",HttpStatus.BAD_REQUEST),
+    NOT_EXIST_STORAGE("존재하지 않는 저장소",HttpStatus.BAD_REQUEST),
+    NOT_EXIST_LABEL("존재하지 않는 라벨",HttpStatus.BAD_REQUEST),
     NOT_EXIST_NOTIFICATION("존재하지 않는 알림",HttpStatus.BAD_REQUEST),
-    NOT_EXIST_FOLLOW("팔로우가 되어있지 않습니다.",HttpStatus.BAD_REQUEST),
+    NOT_EXIST_FOOD_FAVORITE("좋아하는 음식이 없습니다.",HttpStatus.BAD_REQUEST),
     NOT_FOLLOW_SELF("자신을 팔로우 할 수 없습니다.",HttpStatus.BAD_REQUEST),
     EMPTY_FILE_EXCEPTION("파일이 없습니다.",HttpStatus.BAD_REQUEST),
     IO_EXCEPTION_ON_IMAGE_UPLOAD("S3 이미지 업로드 에러.",HttpStatus.BAD_REQUEST),
@@ -35,12 +37,12 @@ public enum ErrorCode {
     S3_CHECK_FILE_EXISTENCE_EXCEPTION("S3_CHECK_FILE_EXISTENCE_EXCEPTION", HttpStatus.BAD_REQUEST),
     S3_DELETE_EXCEPTION("S3 이미지 삭제 실패...", HttpStatus.BAD_REQUEST),
     EXIST_IMAGE("기존이미지가 존재합니다.", HttpStatus.BAD_REQUEST),
-    NOT_EXIST_TAG("테그가 존재하지 않습니다.", HttpStatus.BAD_REQUEST),
+    NOT_EXIST_LOCATION("위치가 존재하지 않습니다.", HttpStatus.BAD_REQUEST),
     WRONG_REQUEST("잘못된 요청입니다.", HttpStatus.BAD_REQUEST),
     UPLOAD_LIMIT_EXCEEDED("업로드한 이미지 갯수 초과", HttpStatus.BAD_REQUEST),
     BUCKET_FULL("버킷 100GB 초과 관리자 문의", HttpStatus.BAD_REQUEST),
     EXPIRED_CERT_CODE("이메일 인증코드 시간 초과", HttpStatus.BAD_REQUEST),
-    NO_AUTHORITY("냉장고 주인이 아닙니다.", HttpStatus.BAD_REQUEST),
+    NO_AUTHORITY("주인이 아닙니다.", HttpStatus.BAD_REQUEST),
     INVALID_CERT_CODE("이메일 인증코드 불일치", HttpStatus.BAD_REQUEST);
 
 

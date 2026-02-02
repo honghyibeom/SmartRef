@@ -4,9 +4,15 @@ import com.hong.smartref.config.MailService;
 import com.hong.smartref.config.jwt.JwtTokenUtil;
 import com.hong.smartref.data.dto.user.*;
 import com.hong.smartref.data.entity.Storage;
+import com.hong.smartref.data.entity.StorageUser;
 import com.hong.smartref.data.entity.User;
+import com.hong.smartref.data.enumerate.DefaultStorageColor;
+import com.hong.smartref.data.enumerate.DefaultStorageName;
+import com.hong.smartref.data.enumerate.StorageType;
 import com.hong.smartref.exception.CustomException;
 import com.hong.smartref.exception.ErrorCode;
+import com.hong.smartref.repository.StorageRepository;
+import com.hong.smartref.repository.StorageUserRepository;
 import com.hong.smartref.repository.UserRepository;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -34,6 +40,8 @@ public class UserService {
     private static final long REFRESH_TOKEN_TTL =
             60L * 24 * 60 * 60; // 60일
     private final MailService mailService;
+    private final StorageRepository storageRepository;
+    private final StorageUserRepository storageUserRepository;
 
     @Transactional
     public void signup(SignupRequest signupRequest) {
@@ -47,7 +55,17 @@ public class UserService {
 
         User resultUser = userRepository.save(user);
 
-        //디폴트 냉장고 생성
+        //디폴트 storage 생성
+        Storage storage = Storage.create(
+                DefaultStorageName.getRandomStorageName(),
+                DefaultStorageColor.getRandomColor(),
+                StorageType.FRIDGE
+        );
+        storageRepository.save(storage);
+
+        // storage User 매핑 저장
+        StorageUser storageUser = StorageUser.create(resultUser, storage);
+        storageUserRepository.save(storageUser);
 
     }
 
