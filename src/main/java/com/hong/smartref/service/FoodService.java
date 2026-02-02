@@ -123,25 +123,6 @@ public class FoodService {
     }
 
     public List<FoodInfo> getFoodInfo(UserDetailsImpl user) {
-        List<Food> findAllByUserId = foodRepository.findAllByUserId(user.getEmail());
-        List<FoodInfo> foodInfoList = new ArrayList<>();
-        for (Food food : findAllByUserId) {
-            FoodInfo foodInfo = FoodInfo.builder()
-                    .storageId(food.getStorage().getStorageId())
-                    .label(food.getLabel() != null ? food.getLabel().getName() : null)
-                    .name(food.getName())
-                    .quantity(food.getQuantity())
-                    .unit(food.getUnit())
-                    .expiryDate(food.getExpiredAt())
-                    .locationId(food.getLocation() != null
-                            ? food.getLocation().getLocationId()
-                            : null)
-                    .isFavorite(foodFavoriteRepository.existsByUserAndFood(user.getUser(), food))
-                    .imageUrl(food.getImageUrl())
-                    .memo(food.getMemo())
-                    .build();
-            foodInfoList.add(foodInfo);
-        }
-        return foodInfoList;
+        return foodRepository.findFoodInfoByUserId(user.getEmail());
     }
 }
