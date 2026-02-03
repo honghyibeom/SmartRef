@@ -1,0 +1,9 @@
+package com.hong.smartref.repository;
+
+import com.hong.smartref.data.entity.RecipeSave;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface RecipeSaveRepository extends JpaRepository<RecipeSave, Long> {
+}

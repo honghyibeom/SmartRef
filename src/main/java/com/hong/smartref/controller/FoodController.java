@@ -1,6 +1,8 @@
 package com.hong.smartref.controller;
 
+import com.hong.smartref.config.security.UserDetailsImpl;
 import com.hong.smartref.data.dto.ApiResponse;
+import com.hong.smartref.data.dto.food.FoodInfo;
 import com.hong.smartref.data.dto.food.FoodRequest;
 import com.hong.smartref.data.dto.user.SignupRequest;
 import com.hong.smartref.service.FoodService;
@@ -11,6 +13,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -39,6 +43,14 @@ public class FoodController {
     public ResponseEntity<ApiResponse<Long>> deleteFood(@RequestParam Long foodId) {
         return ResponseEntity.ok(
                 ApiResponse.success("식품 삭제 완료", foodService.deleteFood(foodId))
+        );
+    }
+
+    @Operation(summary = "음식 조회 api", description = "자신의 음식 정보를 전부 조회")
+    @PostMapping("/get/all")
+    public ResponseEntity<ApiResponse<List<FoodInfo>>> deleteFood(@AuthenticationPrincipal UserDetailsImpl user) {
+        return ResponseEntity.ok(
+                ApiResponse.success("음식 조회 성공", foodService.getFoodInfo(user))
         );
     }
 

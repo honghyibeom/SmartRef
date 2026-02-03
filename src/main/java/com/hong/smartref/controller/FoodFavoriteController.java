@@ -22,7 +22,7 @@ public class FoodFavoriteController {
     public ResponseEntity<ApiResponse<Long>> insertFoodFavorite(@RequestParam("foodId") Long foodId,
                                                                 @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return ResponseEntity.ok(
-                ApiResponse.success("식품 등록 완료", foodFavoriteService.addFavorite(foodId, userDetails))
+                ApiResponse.success("음식 좋아요 완료", foodFavoriteService.addFavorite(foodId, userDetails))
         );
     }
 
@@ -31,7 +31,7 @@ public class FoodFavoriteController {
     public ResponseEntity<ApiResponse<Long>> deleteFoodFavorite(@RequestParam("foodId") Long foodId,
                                                                 @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return ResponseEntity.ok(
-                ApiResponse.success("식품 등록 완료", foodFavoriteService.deleteFavorite(foodId, userDetails))
+                ApiResponse.success("음식 좋아요 취소", foodFavoriteService.deleteFavorite(foodId, userDetails))
         );
     }
 }

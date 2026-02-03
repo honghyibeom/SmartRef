@@ -83,6 +83,7 @@ public class Food {
         food.location = location;
         food.imageUrl = imageUrl;
         food.memo = memo;
+        food.createdAt = LocalDateTime.now();
         return food;
     }
 

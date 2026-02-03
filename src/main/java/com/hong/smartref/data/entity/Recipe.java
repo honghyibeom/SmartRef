@@ -22,6 +22,10 @@ public class Recipe {
     @Column(nullable = false)
     private String title;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
     // ===== Context / Filter Enums =====
     @Enumerated(EnumType.STRING)
     private RecipeType recipeType;
@@ -93,6 +97,13 @@ public class Recipe {
     )
     @OrderBy("stepNumber ASC")
     private List<RecipeStep> steps;
+
+    @OneToMany(
+            mappedBy = "recipe",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<RecipeSave> recipeSaveList;
 
     // ===== Factory =====
 
