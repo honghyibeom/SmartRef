@@ -3,17 +3,11 @@ package com.hong.smartref.service;
 import com.hong.smartref.config.security.UserDetailsImpl;
 import com.hong.smartref.data.dto.recipe.RecipeIdDTO;
 import com.hong.smartref.data.dto.recipe.RecipeRequest;
-import com.hong.smartref.data.entity.Recipe;
-import com.hong.smartref.data.entity.RecipeIngredient;
-import com.hong.smartref.data.entity.RecipeSave;
-import com.hong.smartref.data.entity.RecipeStep;
+import com.hong.smartref.data.entity.*;
 import com.hong.smartref.data.enumerate.RecipeVisibility;
 import com.hong.smartref.exception.CustomException;
 import com.hong.smartref.exception.ErrorCode;
-import com.hong.smartref.repository.RecipeIngredientRepository;
-import com.hong.smartref.repository.RecipeRepository;
-import com.hong.smartref.repository.RecipeSaveRepository;
-import com.hong.smartref.repository.RecipeStepRepository;
+import com.hong.smartref.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,9 +23,12 @@ public class RecipeService {
     private final RecipeIngredientRepository recipeIngredientRepository;
     private final RecipeStepRepository recipeStepRepository;
     private final RecipeSaveRepository recipeSaveRepository;
+    private final RecipeLikeRepository recipeLikeRepository;
 
+    // 레시피 생성
     @Transactional
     public RecipeIdDTO addRecipe(List<RecipeRequest> recipeRequests, UserDetailsImpl userDetails) {
+
         List<Long> recipeIds = new ArrayList<>();
         for (RecipeRequest recipeRequest : recipeRequests) {
             Recipe newRecipe = Recipe.builder()
@@ -86,6 +83,7 @@ public class RecipeService {
         return RecipeIdDTO.from(recipeIds);
     }
 
+    // 진짜 레시피 삭제
     @Transactional
     public Long deleteRecipe(Long recipeId, UserDetailsImpl userDetails) {
         Recipe recipe = recipeRepository.findById(recipeId)
@@ -101,9 +99,60 @@ public class RecipeService {
         return recipeId;
     }
 
-    public Long registerRecipe(UserDetailsImpl) {
+    // 유저가 저장한 레시피 등록
+    @Transactional
+    public Long registerRecipeSave(Long recipeId ,UserDetailsImpl userDetails) {
+        //레시피를 먼저 구한 다음 RecipeSave에 저장한다.
+        Recipe recipe = recipeRepository.findById(recipeId)
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_EXIST_RECIPE));
 
+        RecipeSave recipeSave = RecipeSave.builder()
+                .recipe(recipe)
+                .user(userDetails.getUser())
+                .build();
+
+        recipeSaveRepository.save(recipeSave);
+        return recipeSave.getId();
     }
 
+    //유저가 저장한 레시피 삭제
+    @Transactional
+    public Long deleteRecipeSave(Long recipeId, UserDetailsImpl userDetails) {
+        //레시피를 먼저 구한 다음 RecipeSave를 삭제한다.
+        Recipe recipe = recipeRepository.findById(recipeId)
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_EXIST_RECIPE));
+        RecipeSave recipeSave = recipeSaveRepository.findByUserAndRecipe(userDetails.getUser(), recipe)
+                        .orElseThrow(() -> new CustomException(ErrorCode.NOT_EXIST_RECIPE_SAVE));
 
+        recipeSaveRepository.delete(recipeSave);
+        return recipeSave.getId();
+    }
+
+    // 유저가 저장한 레시피 즐겨찾기 추가
+    @Transactional
+    public Long RecipeLike(Long recipeId, UserDetailsImpl userDetails) {
+        //레시피를 먼저 구한 다음 RecipeSave에 저장한다.
+        Recipe recipe = recipeRepository.findById(recipeId)
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_EXIST_RECIPE));
+
+        RecipeLike recipeLike = RecipeLike.builder()
+                .recipe(recipe)
+                .user(userDetails.getUser())
+                .build();
+
+        recipeLikeRepository.save(recipeLike);
+        return recipeLike.getLikeId();
+    }
+
+    @Transactional
+    public Long RecipeDisLike(Long recipeId, UserDetailsImpl userDetails) {
+        //레시피를 먼저 구한 다음 RecipeSave를 삭제한다.
+        Recipe recipe = recipeRepository.findById(recipeId)
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_EXIST_RECIPE));
+        RecipeLike recipeLike = recipeLikeRepository.findByUserAndRecipe(userDetails.getUser(), recipe)
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_EXIST_RECIPE_LIKE));
+
+        recipeLikeRepository.delete(recipeLike);
+        return recipeLike.getLikeId();
+    }
 }

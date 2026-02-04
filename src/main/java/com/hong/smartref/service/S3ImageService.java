@@ -103,7 +103,7 @@ public class S3ImageService {
         }
 
         String ext = fileName.substring(fileName.lastIndexOf(".")).toLowerCase();
-        List<String> validExts = List.of(".jpg", ".jpeg", ".png");
+        List<String> validExts = List.of(".jpg", ".jpeg", ".png", ".svg");
         if (!validExts.contains(ext)) {
             throw new CustomException(ErrorCode.NO_FILE_EXTENTION);
         }

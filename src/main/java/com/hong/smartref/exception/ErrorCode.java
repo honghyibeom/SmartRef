@@ -8,6 +8,8 @@ public enum ErrorCode {
 
     NOT_EXIST_USER("사용자가 존재하지 않습니다.", HttpStatus.BAD_REQUEST),
     NOT_EXIST_FOOD("음식이 존재하지 않습니다.", HttpStatus.BAD_REQUEST),
+    NOT_EXIST_RECIPE_SAVE("저장한 음식이 없습니다.", HttpStatus.BAD_REQUEST),
+    NOT_EXIST_RECIPE_LIKE("즐겨찾기한 음식이 없습니다.", HttpStatus.BAD_REQUEST),
     NOT_EXIST_STORAGE_USER("사용자의 냉장고가 존재하지 않습니다.", HttpStatus.BAD_REQUEST),
     NOT_EQUALS_USER("사용자가 일지하지 않습니다.", HttpStatus.BAD_REQUEST),
     EXIST_USER("중복된 사용자가 존재합니다.", HttpStatus.BAD_REQUEST),
