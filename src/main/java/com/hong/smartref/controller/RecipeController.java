@@ -2,6 +2,7 @@ package com.hong.smartref.controller;
 
 import com.hong.smartref.config.security.UserDetailsImpl;
 import com.hong.smartref.data.dto.ApiResponse;
+import com.hong.smartref.data.dto.recipe.GeminiRecipeResponse;
 import com.hong.smartref.data.dto.recipe.RecipeIdDTO;
 import com.hong.smartref.data.dto.recipe.RecipeRequest;
 import com.hong.smartref.service.RecipeService;
@@ -71,6 +72,19 @@ public class RecipeController {
                                                            @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return ResponseEntity.ok(
                 ApiResponse.success("유저가 저장한 레시피 즐겨찾기 삭제 완료", recipeService.RecipeDisLike(recipeId, userDetails))
+        );
+    }
+
+    @Operation(summary = "레시피 재미나이 요청 api", description = "레시피 재미나이 요청")
+    @PostMapping("/user/recipe/gemini")
+    public ResponseEntity<ApiResponse<GeminiRecipeResponse>> getGemini(
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        return ResponseEntity.ok(
+                ApiResponse.success(
+                        "레시피 재미나이 생성 요청",
+                        recipeService.getGemini(userDetails)
+                )
         );
     }
 }

@@ -1,6 +1,11 @@
 package com.hong.smartref.service;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hong.smartref.config.security.UserDetailsImpl;
+import com.hong.smartref.data.dto.ApiResponse;
+import com.hong.smartref.data.dto.recipe.GeminiRecipeResponse;
+import com.hong.smartref.data.dto.recipe.RecipeGemini;
 import com.hong.smartref.data.dto.recipe.RecipeIdDTO;
 import com.hong.smartref.data.dto.recipe.RecipeRequest;
 import com.hong.smartref.data.entity.*;
@@ -9,8 +14,11 @@ import com.hong.smartref.exception.CustomException;
 import com.hong.smartref.exception.ErrorCode;
 import com.hong.smartref.repository.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestClient;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +32,8 @@ public class RecipeService {
     private final RecipeStepRepository recipeStepRepository;
     private final RecipeSaveRepository recipeSaveRepository;
     private final RecipeLikeRepository recipeLikeRepository;
+    private final RestClient recipeRestClient;
+    private final ObjectMapper objectMapper;
 
     // 레시피 생성
     @Transactional
@@ -160,5 +170,49 @@ public class RecipeService {
 
         recipeLikeRepository.delete(recipeLike);
         return recipeLike.getLikeId();
+    }
+
+    @Transactional
+    public GeminiRecipeResponse getGemini(UserDetailsImpl userDetails) {
+
+        RecipeGemini request = new RecipeGemini();
+        request.setIngredients(List.of(
+                "Chicken Breast", "Egg", "Tofu", "Bacon", "Onion", "Garlic",
+                "Green Onion", "Carrot", "Potato", "Broccoli", "Spinach",
+                "Mushroom", "Zucchini", "Cabbage", "Tomato", "Cucumber",
+                "Kimchi", "Rice", "Flour", "Pasta Noodles", "Soy Sauce",
+                "Gochujang", "Olive Oil", "Butter", "Cheese", "Milk",
+                "Salt", "Black Pepper", "Sugar", "Sesame Oil"
+        ));
+        request.setPrompt(
+                "i want to make a recipe for my friend, coocking time around 20min, i am not a good cheif , and i am a vegetarian"
+        );
+        request.setDifficulty("Easy");
+        request.setServings("2");
+        request.setUseLocalData(true);
+        request.setStay_region("south korea");
+
+        String rawResponse = recipeRestClient.post()
+                .uri("/stageAitracker/recipe")
+                .body(request)
+                .retrieve()
+                .body(String.class);
+
+        if (rawResponse == null || rawResponse.isBlank()) {
+            throw new RuntimeException("Gemini API 응답이 비어있습니다.");
+        }
+
+        try {
+            // 🔥 바로 파싱 (ApiResponse 아님!)
+            return objectMapper.readValue(
+                    rawResponse,
+                    GeminiRecipeResponse.class
+            );
+
+        } catch (Exception e) {
+            throw new RuntimeException(
+                    "Gemini 응답 파싱 실패. rawResponse=" + rawResponse, e
+            );
+        }
     }
 }

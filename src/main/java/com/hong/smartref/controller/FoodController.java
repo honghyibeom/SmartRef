@@ -6,6 +6,7 @@ import com.hong.smartref.data.dto.food.FoodIdDTO;
 import com.hong.smartref.data.dto.food.FoodInfo;
 import com.hong.smartref.data.dto.food.FoodRegisterRequest;
 import com.hong.smartref.data.dto.food.FoodRequest;
+import com.hong.smartref.data.dto.recipe.GeminiRecipeResponse;
 import com.hong.smartref.data.dto.user.SignupRequest;
 import com.hong.smartref.service.FoodService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -57,5 +58,17 @@ public class FoodController {
         );
     }
 
+    @Operation(summary = "음식 재미나이 요청 api", description = "음식 재미나이 요청")
+    @PostMapping("/gemini")
+    public ResponseEntity<ApiResponse<GeminiRecipeResponse>> getGemini(
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        return ResponseEntity.ok(
+                ApiResponse.success(
+                        "레시피 재미나이 생성 요청",
+                        foodService.getGemini(userDetails)
+                )
+        );
+    }
 
 }

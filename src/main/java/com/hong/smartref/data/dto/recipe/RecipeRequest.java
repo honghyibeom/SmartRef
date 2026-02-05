@@ -1,19 +1,16 @@
 package com.hong.smartref.data.dto.recipe;
 
 import com.hong.smartref.data.enumerate.*;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
 
 import java.beans.Visibility;
 import java.util.List;
-
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
 
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Setter
 public class RecipeRequest {
 
     private String title;
