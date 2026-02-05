@@ -1,19 +1,14 @@
 package com.hong.smartref.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.hong.smartref.config.security.UserDetailsImpl;
 import com.hong.smartref.data.dto.ApiResponse;
 import com.hong.smartref.data.dto.user.*;
-import com.hong.smartref.service.GoogleLoginService;
-import com.hong.smartref.service.KakaoLoginService;
-import com.hong.smartref.service.NaverLoginService;
-import com.hong.smartref.service.UserService;
+import com.hong.smartref.service.*;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -73,8 +68,8 @@ public class UserController {
         );
     }
 
-
     //소셜로그인
+    @Operation(summary = "소셜로그인 토큰", description = "소셜 로그인 accessToken 발급")
     @PostMapping("/auth/socialLogin")
     public ResponseEntity<ApiResponse<LoginResponse>> socialLogin(@RequestBody SocialLoginRequest socialLoginRequest) throws JsonProcessingException {
         return switch (socialLoginRequest.getCode()) {

@@ -1,6 +1,7 @@
 package com.hong.smartref.service;
 
 import com.hong.smartref.config.security.UserDetailsImpl;
+import com.hong.smartref.data.dto.storage.StorageInfo;
 import com.hong.smartref.data.dto.storage.StorageRequest;
 import com.hong.smartref.data.entity.Storage;
 import com.hong.smartref.data.entity.StorageUser;
@@ -115,5 +116,7 @@ public class StorageService {
 
         return storageId;
     }
+
+    //모든 Storage 조회s
 
 }

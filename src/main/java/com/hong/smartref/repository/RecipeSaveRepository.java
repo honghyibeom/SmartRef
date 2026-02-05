@@ -11,4 +11,6 @@ import java.util.Optional;
 @Repository
 public interface RecipeSaveRepository extends JpaRepository<RecipeSave, Long> {
     Optional<RecipeSave> findByUserAndRecipe(User user, Recipe recipe);
+
+    boolean existsRecipeSaveByRecipeAndUser(Recipe recipe, User user);
 }

@@ -91,7 +91,7 @@ public class RecipeService {
 
         // (선택) 권한 체크
         // 예: 작성자만 삭제 가능
-         if (recipe.getUser().getEmail().equals(userDetails.getUser().getEmail())) {
+         if (!recipe.getUser().getEmail().equals(userDetails.getUser().getEmail())) {
              throw new CustomException(ErrorCode.NO_AUTHORITY);
          }
 
@@ -105,6 +105,12 @@ public class RecipeService {
         //레시피를 먼저 구한 다음 RecipeSave에 저장한다.
         Recipe recipe = recipeRepository.findById(recipeId)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_EXIST_RECIPE));
+
+        boolean isExist = recipeSaveRepository.existsRecipeSaveByRecipeAndUser(recipe, userDetails.getUser());
+
+        if (isExist) {
+           throw new CustomException(ErrorCode.EXIST_RECIPE_SAVE);
+        }
 
         RecipeSave recipeSave = RecipeSave.builder()
                 .recipe(recipe)

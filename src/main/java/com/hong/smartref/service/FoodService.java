@@ -1,7 +1,9 @@
 package com.hong.smartref.service;
 
 import com.hong.smartref.config.security.UserDetailsImpl;
+import com.hong.smartref.data.dto.food.FoodIdDTO;
 import com.hong.smartref.data.dto.food.FoodInfo;
+import com.hong.smartref.data.dto.food.FoodRegisterRequest;
 import com.hong.smartref.data.dto.food.FoodRequest;
 import com.hong.smartref.data.entity.*;
 import com.hong.smartref.exception.CustomException;
@@ -27,29 +29,51 @@ public class FoodService {
     private final FoodFavoriteRepository foodFavoriteRepository;
 
     //food 생성
-    public Long addFood(FoodRequest foodRequest, MultipartFile imageUrl) {
+    public FoodIdDTO addFood(List<FoodRequest> foodRequestList, MultipartFile imageUrl) {
         // food를 등록하기 이전에 storage, label, location을 먼저 찾아야 됨.
-        Label label = labelRepository.findByName(foodRequest.getLabel())
-                .orElseThrow(() -> new CustomException(ErrorCode.NOT_EXIST_LABEL));
+        List<Long> foodIds = new ArrayList<>();
 
-        Location location = locationRepository.findById(foodRequest.getLocationId())
-                .orElseThrow(() -> new CustomException(ErrorCode.NOT_EXIST_LOCATION));
-
-        Storage storage = storageRepository.findById(foodRequest.getStorageId())
-                .orElseThrow(() -> new CustomException(ErrorCode.NOT_EXIST_STORAGE));
-
-        Food food = Food.create(
-                storage, label, foodRequest.getName(), foodRequest.getAmountType(), foodRequest.getQuantity(),
-                foodRequest.getUnit(), foodRequest.getExpired_date(), location, null, foodRequest.getMemo()
-        );
-
-        if (imageUrl != null) {
-            String getImage = s3ImageService.uploadFile(imageUrl);
-            food.setImageUrl(getImage);
+        // 이미지가 공통이라면 한 번만 업로드
+        String uploadedImageUrl = null;
+        if (imageUrl != null && !imageUrl.isEmpty()) {
+            uploadedImageUrl = s3ImageService.uploadFile(imageUrl);
         }
 
-        Food result = foodRepository.save(food);
-        return result.getFoodId();
+        for (FoodRequest foodRequest : foodRequestList) {
+
+            Label label = labelRepository.findByName(foodRequest.getLabel())
+                    .orElseThrow(() -> new CustomException(ErrorCode.NOT_EXIST_LABEL));
+
+            Location location = locationRepository.findById(foodRequest.getLocationId())
+                    .orElseThrow(() -> new CustomException(ErrorCode.NOT_EXIST_LOCATION));
+
+            Storage storage = storageRepository.findById(foodRequest.getStorageId())
+                    .orElseThrow(() -> new CustomException(ErrorCode.NOT_EXIST_STORAGE));
+
+            Food food = Food.create(
+                    storage,
+                    label,
+                    foodRequest.getName(),
+                    foodRequest.getAmountType(),
+                    foodRequest.getQuantity(),
+                    foodRequest.getUnit(),
+                    foodRequest.getExpired_date(),
+                    location,
+                    null,
+                    foodRequest.getMemo()
+            );
+
+            if (uploadedImageUrl != null) {
+                food.setImageUrl(uploadedImageUrl);
+            }
+
+            Food savedFood = foodRepository.save(food);
+            foodIds.add(savedFood.getFoodId());
+        }
+
+        return FoodIdDTO.builder()
+                .foodId(foodIds)
+                .build();
     }
 
     //food 수정
