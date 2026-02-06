@@ -14,6 +14,7 @@ public interface FoodRepository extends JpaRepository<Food, Long> {
 
     @Query("""
         SELECT new com.hong.smartref.data.dto.food.FoodInfo(
+            f.foodId,
             s.storageId,
               l.name,
               f.name,
@@ -23,7 +24,8 @@ public interface FoodRepository extends JpaRepository<Food, Long> {
               loc.locationId,
               CASE WHEN ff.foodFavoriteId IS NOT NULL THEN true ELSE false END,
               f.imageUrl,
-              f.memo
+              f.memo,
+              f.amountType
         )
         FROM Food f
         JOIN f.storage s

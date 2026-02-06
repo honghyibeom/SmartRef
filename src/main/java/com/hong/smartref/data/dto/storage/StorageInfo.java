@@ -9,7 +9,7 @@ import java.util.List;
 @Getter
 @Builder
 public class StorageInfo {
-    private Long StorageId;
+    private Long storageId;
     private StorageType storageType;
     private String storageColor;
     private String storageName;

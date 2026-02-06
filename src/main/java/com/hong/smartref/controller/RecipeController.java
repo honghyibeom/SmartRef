@@ -3,6 +3,7 @@ package com.hong.smartref.controller;
 import com.hong.smartref.config.security.UserDetailsImpl;
 import com.hong.smartref.data.dto.ApiResponse;
 import com.hong.smartref.data.dto.recipe.GeminiRecipeResponse;
+import com.hong.smartref.data.dto.recipe.RecipeGemini;
 import com.hong.smartref.data.dto.recipe.RecipeIdDTO;
 import com.hong.smartref.data.dto.recipe.RecipeRequest;
 import com.hong.smartref.service.RecipeService;
@@ -78,12 +79,13 @@ public class RecipeController {
     @Operation(summary = "레시피 재미나이 요청 api", description = "레시피 재미나이 요청")
     @PostMapping("/user/recipe/gemini")
     public ResponseEntity<ApiResponse<GeminiRecipeResponse>> getGemini(
+            @RequestBody RecipeGemini recipeGemini,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
         return ResponseEntity.ok(
                 ApiResponse.success(
                         "레시피 재미나이 생성 요청",
-                        recipeService.getGemini(userDetails)
+                        recipeService.getGemini(recipeGemini,userDetails)
                 )
         );
     }

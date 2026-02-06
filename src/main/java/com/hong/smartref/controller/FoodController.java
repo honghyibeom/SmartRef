@@ -2,19 +2,14 @@ package com.hong.smartref.controller;
 
 import com.hong.smartref.config.security.UserDetailsImpl;
 import com.hong.smartref.data.dto.ApiResponse;
-import com.hong.smartref.data.dto.food.FoodIdDTO;
-import com.hong.smartref.data.dto.food.FoodInfo;
-import com.hong.smartref.data.dto.food.FoodRegisterRequest;
-import com.hong.smartref.data.dto.food.FoodRequest;
+import com.hong.smartref.data.dto.food.*;
 import com.hong.smartref.data.dto.recipe.GeminiRecipeResponse;
-import com.hong.smartref.data.dto.user.SignupRequest;
 import com.hong.smartref.service.FoodService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -51,7 +46,7 @@ public class FoodController {
     }
 
     @Operation(summary = "음식 조회 api", description = "자신의 음식 정보를 전부 조회")
-    @PostMapping("/get/all")
+    @GetMapping("/get/all")
     public ResponseEntity<ApiResponse<List<FoodInfo>>> deleteFood(@AuthenticationPrincipal UserDetailsImpl user) {
         return ResponseEntity.ok(
                 ApiResponse.success("음식 조회 성공", foodService.getFoodInfo(user))
@@ -60,15 +55,17 @@ public class FoodController {
 
     @Operation(summary = "음식 재미나이 요청 api", description = "음식 재미나이 요청")
     @PostMapping("/gemini")
-    public ResponseEntity<ApiResponse<GeminiRecipeResponse>> getGemini(
+    public ResponseEntity<ApiResponse<ImageAnalyzeResponse>> analyzeImage(
+            @RequestBody ImageAnalyzeRequest request,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
         return ResponseEntity.ok(
                 ApiResponse.success(
-                        "레시피 재미나이 생성 요청",
-                        foodService.getGemini(userDetails)
+                        "이미지 분석 완료",
+                        foodService.analyzeImage(request)
                 )
         );
     }
+
 
 }

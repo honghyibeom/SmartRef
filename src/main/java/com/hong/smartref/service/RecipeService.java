@@ -34,6 +34,7 @@ public class RecipeService {
     private final RecipeLikeRepository recipeLikeRepository;
     private final RestClient recipeRestClient;
     private final ObjectMapper objectMapper;
+    private final UserRepository userRepository;
 
     // 레시피 생성
     @Transactional
@@ -173,28 +174,19 @@ public class RecipeService {
     }
 
     @Transactional
-    public GeminiRecipeResponse getGemini(UserDetailsImpl userDetails) {
+    public GeminiRecipeResponse getGemini(RecipeGemini recipeGemini, UserDetailsImpl userDetails) {
 
-        RecipeGemini request = new RecipeGemini();
-        request.setIngredients(List.of(
-                "Chicken Breast", "Egg", "Tofu", "Bacon", "Onion", "Garlic",
-                "Green Onion", "Carrot", "Potato", "Broccoli", "Spinach",
-                "Mushroom", "Zucchini", "Cabbage", "Tomato", "Cucumber",
-                "Kimchi", "Rice", "Flour", "Pasta Noodles", "Soy Sauce",
-                "Gochujang", "Olive Oil", "Butter", "Cheese", "Milk",
-                "Salt", "Black Pepper", "Sugar", "Sesame Oil"
-        ));
-        request.setPrompt(
-                "i want to make a recipe for my friend, coocking time around 20min, i am not a good cheif , and i am a vegetarian"
-        );
-        request.setDifficulty("Easy");
-        request.setServings("2");
-        request.setUseLocalData(true);
-        request.setStay_region("south korea");
+        User user = userDetails.getUser();
+
+        if (user.getTicketCount() == 0) {
+            throw new CustomException(ErrorCode.NOT_EXIST_TICKET);
+        }
+        user.setTicketCount(user.getTicketCount() - 1);
+        userRepository.save(user);
 
         String rawResponse = recipeRestClient.post()
                 .uri("/stageAitracker/recipe")
-                .body(request)
+                .body(recipeGemini)
                 .retrieve()
                 .body(String.class);
 

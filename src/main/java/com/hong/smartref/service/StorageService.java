@@ -1,8 +1,10 @@
 package com.hong.smartref.service;
 
 import com.hong.smartref.config.security.UserDetailsImpl;
+import com.hong.smartref.data.dto.location.LocationInfo;
 import com.hong.smartref.data.dto.storage.StorageInfo;
 import com.hong.smartref.data.dto.storage.StorageRequest;
+import com.hong.smartref.data.entity.Location;
 import com.hong.smartref.data.entity.Storage;
 import com.hong.smartref.data.entity.StorageUser;
 import com.hong.smartref.data.entity.User;
@@ -11,6 +13,7 @@ import com.hong.smartref.data.enumerate.DefaultStorageName;
 import com.hong.smartref.data.enumerate.StorageRole;
 import com.hong.smartref.exception.CustomException;
 import com.hong.smartref.exception.ErrorCode;
+import com.hong.smartref.repository.LocationRepository;
 import com.hong.smartref.repository.StorageRepository;
 import com.hong.smartref.repository.StorageUserRepository;
 import com.hong.smartref.repository.UserRepository;
@@ -18,7 +21,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -26,6 +32,7 @@ public class StorageService {
     private final StorageRepository storageRepository;
     private final UserRepository userRepository;
     private final StorageUserRepository storageUserRepository;
+    private final LocationRepository locationRepository;
 
     // storage 저장
     @Transactional
@@ -117,6 +124,41 @@ public class StorageService {
         return storageId;
     }
 
-    //모든 Storage 조회s
+    //모든 location 조회
+    public List<LocationInfo> getLocationAll() {
+        List<Location> locationList = locationRepository.findAll();
+        return locationList.stream().map(location ->
+                LocationInfo.builder().
+                        locationId(location.getLocationId())
+                        .locationColor(location.getLocationColor())
+                        .locationName(location.getLocationName())
+                        .build()
+                ).toList();
+    }
+
+    public List<StorageInfo> findAllStorage(UserDetailsImpl userDetails) {
+        User user = userRepository.findByEmail(userDetails.getEmail())
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_EXIST_USER));
+
+        List<StorageUser> storageUserList = storageUserRepository.findByUser(user);
+        if (storageUserList.isEmpty()) {
+            throw new CustomException(ErrorCode.NOT_EXIST_STORAGE_USER);
+        }
+
+        List<StorageInfo> storageInfoList = new ArrayList<>();
+        for (StorageUser storageUser : storageUserList) {
+            StorageInfo storageInfo =  StorageInfo.builder()
+                    .storageColor(storageUser.getStorage().getStorageColor())
+                    .storageName(storageUser.getStorage().getStorageName())
+                    .storageType(storageUser.getStorage().getStorageType())
+                    .storageId(storageUser.getStorage().getStorageId())
+                    .locationIds(storageUser.getStorage().getFoodList().stream()
+                            .map(food -> food.getLocation().getLocationId()).collect(Collectors.toList()))
+                    .build();
+
+            storageInfoList.add(storageInfo);
+        }
+        return storageInfoList;
+    }
 
 }

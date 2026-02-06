@@ -1,5 +1,6 @@
 package com.hong.smartref.data.dto.food;
 
+import com.hong.smartref.data.enumerate.AmountType;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -8,6 +9,7 @@ import java.time.LocalDate;
 @Getter
 @Builder
 public class FoodInfo {
+    private Long foodId;
     private Long storageId;
     private String label;
     private String name;
@@ -18,8 +20,10 @@ public class FoodInfo {
     private boolean isFavorite;
     private String imageUrl;
     private String memo;
+    private AmountType amountType;
 
     public FoodInfo(
+            Long foodId,
             Long storageId,
             String label,
             String name,
@@ -29,8 +33,10 @@ public class FoodInfo {
             Long locationId,
             Boolean isFavorite,
             String imageUrl,
-            String memo
+            String memo,
+            AmountType amountType
     ) {
+        this.foodId = foodId;
         this.storageId = storageId;
         this.label = label;
         this.name = name;
@@ -41,5 +47,6 @@ public class FoodInfo {
         this.isFavorite = isFavorite;
         this.imageUrl = imageUrl;
         this.memo = memo;
+        this.amountType = amountType;
     }
 }

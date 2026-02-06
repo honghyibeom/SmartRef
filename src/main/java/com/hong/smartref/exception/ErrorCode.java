@@ -14,6 +14,7 @@ public enum ErrorCode {
     NOT_EQUALS_USER("사용자가 일지하지 않습니다.", HttpStatus.BAD_REQUEST),
     EXIST_USER("중복된 사용자가 존재합니다.", HttpStatus.BAD_REQUEST),
     EXIST_RECIPE_SAVE("이미 저장된 레시피입니다.", HttpStatus.BAD_REQUEST),
+    NOT_EXIST_TICKET("사용할 티켓이 부족합니다.", HttpStatus.BAD_REQUEST),
     NOT_EQUALS_PASSWORD("비밀번호가 일치하지 않습니다.", HttpStatus.BAD_REQUEST),
     SMS_CERTIFICATION_NUMBER_MISMATCH("인증번호가 일치하지 않습니다.", HttpStatus.BAD_REQUEST),
     NOT_VALIDATE_USER("인증되지 않은 유저입니다.", HttpStatus.UNAUTHORIZED),

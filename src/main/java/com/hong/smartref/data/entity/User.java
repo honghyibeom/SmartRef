@@ -4,10 +4,7 @@ import com.hong.smartref.data.enumerate.DefaultColor;
 import com.hong.smartref.data.enumerate.DefaultUserName;
 import com.hong.smartref.data.enumerate.Role;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -43,6 +40,7 @@ public class User {
 
     private String locationName;
 
+    @Setter
     @Column(nullable = false)
     private int ticketCount;
 
@@ -89,5 +87,6 @@ public class User {
     public void setValid(boolean valid) {
         isValid = valid;
     }
+
 }
 
