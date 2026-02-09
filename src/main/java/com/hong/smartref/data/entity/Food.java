@@ -56,6 +56,8 @@ public class Food {
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
+    private Long masterId;
+
     @OneToMany(mappedBy = "food", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<FoodFavorite> foodFavoriteList = new ArrayList<>();
 
@@ -70,7 +72,8 @@ public class Food {
             LocalDate expiredAt,
             Location location,
             String imageUrl,
-            String memo
+            String memo,
+            Long masterId
     ) {
         Food food = new Food();
         food.storage = storage;
@@ -84,6 +87,7 @@ public class Food {
         food.imageUrl = imageUrl;
         food.memo = memo;
         food.createdAt = LocalDateTime.now();
+        food.masterId = masterId;
         return food;
     }
 

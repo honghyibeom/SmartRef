@@ -60,7 +60,8 @@ public class FoodService {
                     foodRequest.getExpired_date(),
                     location,
                     null,
-                    foodRequest.getMemo()
+                    foodRequest.getMemo(),
+                    foodRequest.getMasterId()
             );
 
             if (uploadedImageUrl != null) {

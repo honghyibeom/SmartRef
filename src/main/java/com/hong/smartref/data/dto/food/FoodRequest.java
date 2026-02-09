@@ -21,4 +21,5 @@ public class FoodRequest {
     private String ImageUrl;
     private String memo;
     private AmountType amountType;
+    private Long masterId;
 }
