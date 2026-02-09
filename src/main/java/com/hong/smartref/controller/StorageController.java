@@ -43,7 +43,7 @@ public class StorageController {
                 ApiResponse.success("Storage 삭제", storageService.deleteStorage(storageId, userDetails))
         );
     }
-    @GetMapping("/all")
+    @GetMapping("/get")
     public ResponseEntity<ApiResponse<List<StorageInfo>>> getStorageAll(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         return ResponseEntity.ok(
                 ApiResponse.success("모든 Storage 조회", storageService.findAllStorage(userDetails))
