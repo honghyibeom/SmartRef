@@ -8,6 +8,12 @@ public enum ErrorCode {
 
     NOT_EXIST_USER("사용자가 존재하지 않습니다.", HttpStatus.BAD_REQUEST),
     NOT_EXIST_FOOD("음식이 존재하지 않습니다.", HttpStatus.BAD_REQUEST),
+    FAIL_CREATE_NICKNAME("닉네임 생성 실패", HttpStatus.BAD_REQUEST),
+    FAIL_UPDATE_EXTERNAL_FOOD("외부 ingredient 수정 실패", HttpStatus.BAD_REQUEST),
+    FAIL_TRANSFER_INGREDIENT_TO_NICKNAME("ingredient -> nickname 변환 실패",HttpStatus.BAD_REQUEST),
+    FAIL_MIGRATE_EXTERNAL_FOOD("외부 재료 ID 마이그래이션 실패" , HttpStatus.BAD_REQUEST),
+    FAIL_CREATE_EXTERNAL_FOOD("외부음식 생성 실패",HttpStatus.BAD_REQUEST),
+    NOT_EXIST_EXTERNAL_FOOD("외부 음식이 존재하지 않습니다.", HttpStatus.BAD_REQUEST),
     NOT_EXIST_RECIPE_SAVE("저장한 음식이 없습니다.", HttpStatus.BAD_REQUEST),
     NOT_EXIST_RECIPE_LIKE("즐겨찾기한 음식이 없습니다.", HttpStatus.BAD_REQUEST),
     NOT_EXIST_STORAGE_USER("사용자의 냉장고가 존재하지 않습니다.", HttpStatus.BAD_REQUEST),
