@@ -51,7 +51,7 @@ public class PythonController {
     // 3️⃣ 일반 재료 생성
     // -------------------------------------------------
     @Operation(summary = "재료 생성", description = "일반 재료 batch 생성")
-    @PostMapping("/ingredient")
+    @PostMapping("/post/ingredient")
     public ResponseEntity<ApiResponse<List<ExternalIngredientCreateResponse>>> createIngredient(
             @RequestBody List<ExternalIngredientCreateRequest> request
     ) {
@@ -67,7 +67,7 @@ public class PythonController {
     // 4️⃣ 미스테리 재료 생성
     // -------------------------------------------------
     @Operation(summary = "미스테리 재료 생성", description = "미스테리 재료 batch 생성")
-    @PostMapping("/ingredient/mistery")
+    @PostMapping("/post/mistery/ingredient")
     public ResponseEntity<ApiResponse<List<ExternalMisteryIngredientCreateResponse>>> createMisteryIngredient(
             @RequestBody List<ExternalMisteryIngredientCreateRequest> request
     ) {
@@ -83,7 +83,7 @@ public class PythonController {
     // 5️⃣ 요리(cuisine) 재료 생성
     // -------------------------------------------------
     @Operation(summary = "요리 재료 생성", description = "요리(cuisine) 재료 batch 생성")
-    @PostMapping("/ingredient/cuisine")
+    @PostMapping("/post/cuisine/ingredient")
     public ResponseEntity<ApiResponse<List<ExternalCuisineIngredientCreateResponse>>> createCuisineIngredient(
             @RequestBody List<ExternalCuisineIngredientCreateRequest> request
     ) {
@@ -99,7 +99,7 @@ public class PythonController {
     // 6️⃣ 재료 ID 대역 이전
     // -------------------------------------------------
     @Operation(summary = "재료 ID 이전", description = "재료 ID 대역 마이그레이션")
-    @PostMapping("/ingredient/migrate")
+    @PostMapping("/post/migrated/id")
     public ResponseEntity<ApiResponse<List<ExternalIngredientMigrationResponse>>> migrateIngredient(
             @RequestBody List<ExternalIngredientMigrationRequest> request
     ) {
@@ -115,7 +115,7 @@ public class PythonController {
     // 7️⃣ ingredient → nickname 변환
     // -------------------------------------------------
     @Operation(summary = "ingredient → nickname 변환", description = "ingredient를 nickname으로 이전")
-    @PostMapping("/ingredient/transfer/nickname")
+    @PostMapping("/post/transfer/ingredientToNickname")
     public ResponseEntity<ApiResponse<List<ExternalIngredientToNicknameResponse>>> transferToNickname(
             @RequestBody List<ExternalIngredientToNicknameRequest> request
     ) {
@@ -131,7 +131,7 @@ public class PythonController {
     // 8️⃣ nickname 추가
     // -------------------------------------------------
     @Operation(summary = "닉네임 추가", description = "ingredient에 nickname batch 추가")
-    @PostMapping("/ingredient/nickname")
+    @PostMapping("/post/nickname")
     public ResponseEntity<ApiResponse<List<ExternalNicknameCreateResponse>>> addNickname(
             @RequestBody List<ExternalNicknameCreateRequest> request
     ) {
@@ -147,7 +147,7 @@ public class PythonController {
     // 9️⃣ ingredient 데이터 수정 (PATCH)
     // -------------------------------------------------
     @Operation(summary = "ingredient 수정", description = "ingredient master 데이터 수정")
-    @PatchMapping("/ingredient")
+    @PatchMapping("/patch/ingredient")
     public ResponseEntity<ApiResponse<Void>> updateIngredient(
             @RequestBody List<ExternalIngredientUpdateRequest> request
     ) {
