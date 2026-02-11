@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 
 @Getter
@@ -12,7 +13,16 @@ import java.util.Map;
 public class ExternalIngredientCreateResponse {
 
     private String message;
-    private Ingredient ingredient;
+    private Integer count;
+    private List<DataItem> data;
+
+    @Getter
+    @NoArgsConstructor
+    public static class DataItem {
+
+        private String message;
+        private Ingredient ingredient;
+    }
 
     @Getter
     @NoArgsConstructor

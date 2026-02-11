@@ -56,6 +56,9 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RecipeLike> recipeLikeList  = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PushToken> pushTokenList  = new ArrayList<>();
+
     @OneToMany(
             mappedBy = "user",
             cascade = CascadeType.ALL,
