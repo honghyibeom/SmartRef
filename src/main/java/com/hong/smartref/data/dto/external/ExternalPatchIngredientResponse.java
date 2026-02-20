@@ -10,7 +10,7 @@ import java.util.Map;
 
 @Getter
 @NoArgsConstructor
-public class ExternalCuisineIngredientCreateResponse {
+public class ExternalPatchIngredientResponse {
 
     private String message;
     private int count;
@@ -40,4 +40,3 @@ public class ExternalCuisineIngredientCreateResponse {
         private LocalDateTime createdAt;
     }
 }
-

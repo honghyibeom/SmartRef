@@ -6,6 +6,7 @@ import com.hong.smartref.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
@@ -17,13 +18,13 @@ import java.util.List;
 public class PythonService {
     private final RestClient recipeRestClient;
 
-    // 음식 검색 (별명 포함)
+    // 재료 검색(별명 포함)
     public ExternalFoodSearchResponse search(String keyword) {
 
         try {
             return recipeRestClient.get()
                     .uri(uriBuilder -> uriBuilder
-                            .path("/stageAitracker/search")
+                            .path("/search")
                             .queryParam("q", keyword)
                             .build())
                     .retrieve()
@@ -35,14 +36,30 @@ public class PythonService {
         }
     }
 
-    /**
-     * 재료 master id 목록으로 상세 정보 조회
-     */
+    // 재료 x000 번대 재료들 조회
+    public ExternalDigitFoodResponse getDigitItems(Integer digitNumber) {
+
+        try {
+            return recipeRestClient.get()
+                    .uri(uriBuilder -> uriBuilder
+                            .path("/getxdigititems")
+                            .queryParam("digitNumber", digitNumber)
+                            .build())
+                    .retrieve()
+                    .body(ExternalDigitFoodResponse.class);
+
+        } catch (Exception e) {
+            log.error("외부 x000 재료 조회 실패. digitNumber={}", digitNumber, e);
+            throw new CustomException(ErrorCode.NOT_EXIST_EXTERNAL_FOOD);
+        }
+    }
+
+    // 재료 id 기반 내용 검색(복수 가능)
     public List<ExternalIngredientMasterResponse> getMasterInfo(List<Long> masterIds) {
 
         try {
             return recipeRestClient.post()
-                    .uri("/stageAitracker/ingredients/batch")
+                    .uri("/ingredients")
                     .body(masterIds)
                     .retrieve()
                     .body(new ParameterizedTypeReference<>() {});
@@ -53,32 +70,46 @@ public class PythonService {
         }
     }
 
-    /**
-     * 재료 master 복수 생성
-     */
-    public List<ExternalIngredientCreateResponse> createIngredients(
-            List<ExternalIngredientCreateRequest> requests
-    ) {
+    //재료추가
+    public ExternalCreateIngredientResponse createIngredients(List<ExternalCreateIngredientRequest> requestList) {
+
         try {
             return recipeRestClient.post()
-                    .uri("/stageAitracker/ingredients/batch")
-                    .body(requests)
+                    .uri("/createNewFood")
+                    .body(requestList)
                     .retrieve()
-                    .body(new ParameterizedTypeReference<>() {});
+                    .body(ExternalCreateIngredientResponse.class);
 
         } catch (Exception e) {
-            log.error("외부 재료 생성 실패. request={}", requests, e);
+            log.error("외부 재료 생성 API 호출 실패", e);
             throw new CustomException(ErrorCode.FAIL_CREATE_EXTERNAL_FOOD);
         }
     }
 
+    //닉네임 추가
+    public ExternalAddNicknameResponse addNicknames(
+            List<ExternalAddNicknameRequest> requestList) {
+
+        try {
+            return recipeRestClient.post()
+                    .uri("/addNickname")
+                    .body(requestList)
+                    .retrieve()
+                    .body(ExternalAddNicknameResponse.class);
+
+        } catch (Exception e) {
+            log.error("외부 닉네임 추가 API 호출 실패", e);
+            throw new CustomException(ErrorCode.EXTERNAL_API_ERROR);
+        }
+    }
+
     // 미스테리 재료 추가
-    public List<ExternalMisteryIngredientCreateResponse> createMisteryIngredients(
+    public ExternalMisteryIngredientCreateResponse createMisteryIngredients(
             List<ExternalMisteryIngredientCreateRequest> requests
     ) {
         try {
             return recipeRestClient.post()
-                    .uri("/stageAitracker/createMisteryFood")
+                    .uri("/createMisteryFood")
                     .body(requests)
                     .retrieve()
                     .body(new ParameterizedTypeReference<>() {});
@@ -90,12 +121,12 @@ public class PythonService {
     }
 
     // 요리 추가
-    public List<ExternalCuisineIngredientCreateResponse> createCuisineIngredients(
+    public ExternalCuisineIngredientCreateResponse createCuisineIngredients(
             List<ExternalCuisineIngredientCreateRequest> requests
     ) {
         try {
             return recipeRestClient.post()
-                    .uri("/stageAitracker/createCuisineFood")
+                    .uri("/createCuisineFood")
                     .body(requests)
                     .retrieve()
                     .body(new ParameterizedTypeReference<>() {});
@@ -106,15 +137,13 @@ public class PythonService {
         }
     }
 
-    /**
-     * 재료 ID 대역 이전 (x번대 → y번대)
-     */
-    public List<ExternalIngredientMigrationResponse> migrateIngredientIds(
+    // x번대 id 를 y번대 id로 이전
+    public ExternalIngredientMigrationResponse migrateIngredientIds(
             List<ExternalIngredientMigrationRequest> requests
     ) {
         try {
             return recipeRestClient.post()
-                    .uri("/stageAitracker/migrationNewFood")
+                    .uri("/migrationNewFood")
                     .body(requests)
                     .retrieve()
                     .body(new ParameterizedTypeReference<>() {});
@@ -125,15 +154,13 @@ public class PythonService {
         }
     }
 
-    /**
-     * ingredient 를 nickname(별칭)으로 변환
-     */
+    //ingredient 를 nickname 으로 변환
     public List<ExternalIngredientToNicknameResponse> transferIngredientToNickname(
             List<ExternalIngredientToNicknameRequest> requests
     ) {
         try {
             return recipeRestClient.post()
-                    .uri("/stageAitracker/migrationIngredientToNickname")
+                    .uri("/migrationIngredientToNickname")
                     .body(requests)
                     .retrieve()
                     .body(new ParameterizedTypeReference<>() {});
@@ -144,41 +171,71 @@ public class PythonService {
         }
     }
 
-    /**
-     * ingredient 에 nickname(별칭) 추가
-     */
-    public List<ExternalNicknameCreateResponse> createNicknames(
-            List<ExternalNicknameCreateRequest> requests
-    ) {
+    // ingredient data 편집
+    public ExternalPatchIngredientResponse patchIngredients(
+            List<ExternalIngredientUpdateRequest> requestList) {
+
         try {
-            return recipeRestClient.post()
-                    .uri("/stageAitracker/addNicknameBatch")
-                    .body(requests)
+            return recipeRestClient.patch()
+                    .uri("/api/master/patch/ingredient")
+                    .body(requestList)
                     .retrieve()
-                    .body(new ParameterizedTypeReference<>() {});
+                    .body(ExternalPatchIngredientResponse.class);
 
         } catch (Exception e) {
-            log.error("닉네임 생성 실패. request={}", requests, e);
-            throw new CustomException(ErrorCode.FAIL_CREATE_NICKNAME);
+            log.error("ingredient 수정 실패", e);
+            throw new CustomException(ErrorCode.EXTERNAL_API_ERROR);
         }
     }
 
-    /**
-     * ingredient master 데이터 수정 (batch)
-     */
-    public void updateIngredients(
-            List<ExternalIngredientUpdateRequest> requests
-    ) {
+    // nickname data 편집
+    public ExternalPatchNicknameResponse patchNicknames(
+            List<ExternalPatchNicknameRequest> requestList) {
+
         try {
-            recipeRestClient.patch()
-                    .uri("/stageAitracker/patch/fooditem")
-                    .body(requests)
+            return recipeRestClient.patch()
+                    .uri("/patch/nickName")
+                    .body(requestList)
                     .retrieve()
-                    .toBodilessEntity();
+                    .body(ExternalPatchNicknameResponse.class);
 
         } catch (Exception e) {
-            log.error("외부 ingredient 수정 실패. request={}", requests, e);
-            throw new CustomException(ErrorCode.FAIL_UPDATE_EXTERNAL_FOOD);
+            log.error("nickname 수정 실패", e);
+            throw new CustomException(ErrorCode.EXTERNAL_API_ERROR);
+        }
+    }
+
+    //ingredient 삭제
+    public ExternalDeleteIngredientResponse deleteIngredients(
+            List<ExternalDeleteIngredientRequest> requestList) {
+
+        try {
+            return recipeRestClient.method(HttpMethod.DELETE)
+                    .uri("/delete/ingredient")
+                    .body(requestList)
+                    .retrieve()
+                    .body(ExternalDeleteIngredientResponse.class);
+
+        } catch (Exception e) {
+            log.error("ingredient 삭제 실패", e);
+            throw new CustomException(ErrorCode.EXTERNAL_API_ERROR);
+        }
+    }
+
+    // nickname 삭제
+    public ExternalDeleteNicknameResponse deleteNicknames(
+            List<ExternalDeleteNicknameRequest> requestList) {
+
+        try {
+            return recipeRestClient.method(HttpMethod.DELETE)
+                    .uri("/api/master/delete/nickName")
+                    .body(requestList)
+                    .retrieve()
+                    .body(ExternalDeleteNicknameResponse.class);
+
+        } catch (Exception e) {
+            log.error("nickname 삭제 실패", e);
+            throw new CustomException(ErrorCode.EXTERNAL_API_ERROR);
         }
     }
 

@@ -4,12 +4,23 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Getter
 @NoArgsConstructor
-public class ExternalNicknameCreateResponse {
+public class ExternalDeleteNicknameResponse {
 
     private String message;
-    private Nickname nickname;
+    private int count;
+    private List<Item> data;
+
+    @Getter
+    @NoArgsConstructor
+    public static class Item {
+
+        private String message;
+        private Nickname nickname;
+    }
 
     @Getter
     @NoArgsConstructor
@@ -26,4 +37,3 @@ public class ExternalNicknameCreateResponse {
         private String langCode;
     }
 }
-

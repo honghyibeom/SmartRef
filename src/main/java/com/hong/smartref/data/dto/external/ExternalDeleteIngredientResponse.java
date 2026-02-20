@@ -10,17 +10,24 @@ import java.util.Map;
 
 @Getter
 @NoArgsConstructor
-public class ExternalIngredientCreateResponse {
+public class ExternalDeleteIngredientResponse {
 
     private String message;
-    private Integer count;
-    private List<DataItem> data;
+    private int count;
+    private List<Item> data;
 
     @Getter
     @NoArgsConstructor
-    public static class DataItem {
+    public static class Item {
 
         private String message;
+
+        @JsonProperty("ingredient_id")
+        private Long ingredientId;
+
+        @JsonProperty("deleted_synonyms")
+        private Integer deletedSynonyms;
+
         private Ingredient ingredient;
     }
 
@@ -40,4 +47,3 @@ public class ExternalIngredientCreateResponse {
         private LocalDateTime createdAt;
     }
 }
-

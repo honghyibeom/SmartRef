@@ -18,9 +18,6 @@ import java.util.List;
 public class PythonController {
     private final PythonService pythonService;
 
-    // -------------------------------------------------
-    // 1️⃣ 마스터 음식 검색
-    // -------------------------------------------------
     @Operation(summary = "마스터 음식 검색", description = "음식 정보를 검색")
     @GetMapping("/search")
     public ResponseEntity<ExternalFoodSearchResponse> search(
@@ -29,92 +26,100 @@ public class PythonController {
         return ResponseEntity.ok(pythonService.search(q));
     }
 
-    // -------------------------------------------------
-    // 2️⃣ 재료 master ID 기반 조회 (batch)
-    // -------------------------------------------------
-    @Operation(summary = "재료 마스터 조회", description = "재료 master id 기반 조회")
-    @PostMapping("/get/masterinfo")
-    public ResponseEntity<List<ExternalIngredientMasterResponse>> getIngredientBatch(
-            @RequestBody List<Long> ids
+    @Operation(summary = "재료 x000 번대 재료들 조회", description = "재료 x000 번대 재료들 조회")
+    @PostMapping("/get/xdegitInfo")
+    public ResponseEntity<ExternalDigitFoodResponse> xdegitInfo(
+            @RequestParam Integer digitNumberInteger
     ) {
-        return ResponseEntity.ok(pythonService.getMasterInfo(ids));
+        return ResponseEntity.ok(pythonService.getDigitItems(digitNumberInteger));
     }
 
-    // -------------------------------------------------
-    // 3️⃣ 일반 재료 생성
-    // -------------------------------------------------
-    @Operation(summary = "재료 생성", description = "일반 재료 batch 생성")
+    @Operation(summary = "재료 id 기반 내용 검색(복수 가능)", description = "재료 id 기반 내용 검색(복수 가능)")
+    @GetMapping("/get/idInfo")
+    public ResponseEntity<List<ExternalIngredientMasterResponse>> getMasterInfo(
+            @RequestBody List<Long> masterIds
+    ) {
+        return ResponseEntity.ok(pythonService.getMasterInfo(masterIds));
+    }
+
+    @Operation(summary = "재료추가", description = "재료추가")
     @PostMapping("/post/ingredient")
-    public ResponseEntity<List<ExternalIngredientCreateResponse>> createIngredient(
-            @RequestBody List<ExternalIngredientCreateRequest> request
+    public ResponseEntity<ExternalCreateIngredientResponse> createIngredients(
+            @RequestBody List<ExternalCreateIngredientRequest> requestList
     ) {
-        return ResponseEntity.ok(pythonService.createIngredients(request));
+        return ResponseEntity.ok(pythonService.createIngredients(requestList));
     }
 
-    // -------------------------------------------------
-    // 4️⃣ 미스테리 재료 생성
-    // -------------------------------------------------
-    @Operation(summary = "미스테리 재료 생성", description = "미스테리 재료 batch 생성")
-    @PostMapping("/post/mistery/ingredient")
-    public ResponseEntity<List<ExternalMisteryIngredientCreateResponse>> createMisteryIngredient(
-            @RequestBody List<ExternalMisteryIngredientCreateRequest> request
-    ) {
-        return ResponseEntity.ok(pythonService.createMisteryIngredients(request));
-    }
-
-    // -------------------------------------------------
-    // 5️⃣ 요리(cuisine) 재료 생성
-    // -------------------------------------------------
-    @Operation(summary = "요리 재료 생성", description = "요리(cuisine) 재료 batch 생성")
-    @PostMapping("/post/cuisine/ingredient")
-    public ResponseEntity<List<ExternalCuisineIngredientCreateResponse>> createCuisineIngredient(
-            @RequestBody List<ExternalCuisineIngredientCreateRequest> request
-    ) {
-        return ResponseEntity.ok(pythonService.createCuisineIngredients(request));
-    }
-
-    // -------------------------------------------------
-    // 6️⃣ 재료 ID 대역 이전
-    // -------------------------------------------------
-    @Operation(summary = "재료 ID 이전", description = "재료 ID 대역 마이그레이션")
-    @PostMapping("/post/migrated/id")
-    public ResponseEntity<List<ExternalIngredientMigrationResponse>> migrateIngredient(
-            @RequestBody List<ExternalIngredientMigrationRequest> request
-    ) {
-        return ResponseEntity.ok(pythonService.migrateIngredientIds(request));
-    }
-
-    // -------------------------------------------------
-    // 7️⃣ ingredient → nickname 변환
-    // -------------------------------------------------
-    @Operation(summary = "ingredient → nickname 변환", description = "ingredient를 nickname으로 이전")
-    @PostMapping("/post/transfer/ingredientToNickname")
-    public ResponseEntity<List<ExternalIngredientToNicknameResponse>> transferToNickname(
-            @RequestBody List<ExternalIngredientToNicknameRequest> request
-    ) {
-        return ResponseEntity.ok(pythonService.transferIngredientToNickname(request));
-    }
-
-    // -------------------------------------------------
-    // 8️⃣ nickname 추가
-    // -------------------------------------------------
-    @Operation(summary = "닉네임 추가", description = "ingredient에 nickname batch 추가")
+    @Operation(summary = "닉네임 추가", description = "닉네임 추가")
     @PostMapping("/post/nickname")
-    public ResponseEntity<List<ExternalNicknameCreateResponse>> addNickname(
-            @RequestBody List<ExternalNicknameCreateRequest> request
+    public ResponseEntity<ExternalAddNicknameResponse> addNicknames(
+            @RequestBody List<ExternalAddNicknameRequest> requestList
     ) {
-        return ResponseEntity.ok(pythonService.createNicknames(request));
+        return ResponseEntity.ok(pythonService.addNicknames(requestList));
     }
 
-    // -------------------------------------------------
-    // 9️⃣ ingredient 데이터 수정 (PATCH)
-    // -------------------------------------------------
-    @Operation(summary = "ingredient 수정", description = "ingredient master 데이터 수정")
-    @PatchMapping("/patch/ingredient")
-    public ResponseEntity<Void> updateIngredient(
-            @RequestBody List<ExternalIngredientUpdateRequest> request
+    @Operation(summary = "닉네임 추가", description = "닉네임 추가")
+    @PostMapping("/post/mistery/ingredient")
+    public ResponseEntity<ExternalMisteryIngredientCreateResponse> createMisteryIngredients(
+            @RequestBody List<ExternalMisteryIngredientCreateRequest> requestList
     ) {
-        pythonService.updateIngredients(request);
-        return ResponseEntity.ok(null);
+        return ResponseEntity.ok(pythonService.createMisteryIngredients(requestList));
     }
+
+    @Operation(summary = "요리 추가", description = "요리 추가")
+    @PostMapping("/post/cuisine/ingredient")
+    public ResponseEntity<ExternalCuisineIngredientCreateResponse> createCuisineIngredients(
+            @RequestBody List<ExternalCuisineIngredientCreateRequest> requests
+    ) {
+        return ResponseEntity.ok(pythonService.createCuisineIngredients(requests));
+    }
+
+    @Operation(summary = "x번대 id 를 y번대 id로 이전", description = "x번대 id 를 y번대 id로 이전")
+    @PostMapping("/post/migrated/id")
+    public ResponseEntity<ExternalIngredientMigrationResponse> migrateIngredientIds(
+            @RequestBody List<ExternalIngredientMigrationRequest> requests
+    ) {
+        return ResponseEntity.ok(pythonService.migrateIngredientIds(requests));
+    }
+
+    @Operation(summary = "ingredient 를 nickname 으로 변환", description = "ingredient 를 nickname 으로 변환")
+    @PostMapping("/post/transfer/ingredientToNickname")
+    public ResponseEntity<List<ExternalIngredientToNicknameResponse>> transferIngredientToNickname(
+            @RequestBody List<ExternalIngredientToNicknameRequest> requests
+    ) {
+        return ResponseEntity.ok(pythonService.transferIngredientToNickname(requests));
+    }
+
+    @Operation(summary = "ingredient data 편집", description = "ingredient data 편집")
+    @PatchMapping("/patch/ingredient")
+    public ResponseEntity<ExternalPatchIngredientResponse> patchIngredients(
+            @RequestBody  List<ExternalIngredientUpdateRequest> requestList
+    ) {
+        return ResponseEntity.ok(pythonService.patchIngredients(requestList));
+    }
+
+    @Operation(summary = "nickname data 편집", description = "nickname data 편집")
+    @PatchMapping("/patch/nickName")
+    public ResponseEntity<ExternalPatchNicknameResponse> patchNicknames(
+            @RequestBody  List<ExternalPatchNicknameRequest> requestList
+    ) {
+        return ResponseEntity.ok(pythonService.patchNicknames(requestList));
+    }
+
+    @Operation(summary = "ingredient 삭제", description = "ingredient 삭제")
+    @DeleteMapping("/delete/ingredient")
+    public ResponseEntity<ExternalDeleteIngredientResponse> deleteIngredients(
+            @RequestBody  List<ExternalDeleteIngredientRequest> requestList
+    ) {
+        return ResponseEntity.ok(pythonService.deleteIngredients(requestList));
+    }
+
+    @Operation(summary = "nickname 삭제", description = "nickname 삭제")
+    @DeleteMapping("/delete/nickName")
+    public ResponseEntity<ExternalDeleteNicknameResponse> deleteNicknames(
+            @RequestBody  List<ExternalDeleteNicknameRequest> requestList
+    ) {
+        return ResponseEntity.ok(pythonService.deleteNicknames(requestList));
+    }
+
 }

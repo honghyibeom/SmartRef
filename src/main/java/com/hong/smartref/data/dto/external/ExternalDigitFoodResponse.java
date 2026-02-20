@@ -10,23 +10,23 @@ import java.util.Map;
 
 @Getter
 @NoArgsConstructor
-public class ExternalCuisineIngredientCreateResponse {
+public class ExternalDigitFoodResponse {
 
-    private String message;
     private int count;
+
+    private Integer digitNumber;
+
+    @JsonProperty("start_id")
+    private Long startId;
+
+    @JsonProperty("end_id")
+    private Long endId;
+
     private List<Item> data;
 
     @Getter
     @NoArgsConstructor
     public static class Item {
-
-        private String message;
-        private Ingredient ingredient;
-    }
-
-    @Getter
-    @NoArgsConstructor
-    public static class Ingredient {
 
         private Long id;
         private String label;
@@ -40,4 +40,3 @@ public class ExternalCuisineIngredientCreateResponse {
         private LocalDateTime createdAt;
     }
 }
-

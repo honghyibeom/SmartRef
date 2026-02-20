@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 public enum ErrorCode {
 
     NOT_EXIST_USER("사용자가 존재하지 않습니다.", HttpStatus.BAD_REQUEST),
+    EXTERNAL_API_ERROR("외부 API 호출 실패", HttpStatus.BAD_REQUEST),
     NOT_EXIST_FOOD("음식이 존재하지 않습니다.", HttpStatus.BAD_REQUEST),
     FAIL_CREATE_NICKNAME("닉네임 생성 실패", HttpStatus.BAD_REQUEST),
     FAIL_UPDATE_EXTERNAL_FOOD("외부 ingredient 수정 실패", HttpStatus.BAD_REQUEST),

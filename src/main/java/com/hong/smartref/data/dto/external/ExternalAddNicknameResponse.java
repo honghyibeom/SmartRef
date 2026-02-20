@@ -8,7 +8,7 @@ import java.util.List;
 
 @Getter
 @NoArgsConstructor
-public class ExternalIngredientToNicknameResponse {
+public class ExternalAddNicknameResponse {
 
     private String message;
     private int count;
@@ -19,20 +19,7 @@ public class ExternalIngredientToNicknameResponse {
     public static class Item {
 
         private String message;
-
         private Nickname nickname;
-
-        @JsonProperty("source_id")
-        private Long sourceId;
-
-        @JsonProperty("target_ingredient_id")
-        private Long targetIngredientId;
-
-        @JsonProperty("deleted_source")
-        private Boolean deletedSource;
-
-        @JsonProperty("deleted_source_synonyms")
-        private Integer deletedSourceSynonyms;
     }
 
     @Getter
@@ -50,4 +37,3 @@ public class ExternalIngredientToNicknameResponse {
         private String langCode;
     }
 }
-
