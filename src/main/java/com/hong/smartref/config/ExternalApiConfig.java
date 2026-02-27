@@ -14,7 +14,7 @@ public class ExternalApiConfig {
             @Value("${external-api.api-key}") String apiKey
     ) {
         return RestClient.builder()
-                .baseUrl("https://w4bwrqmrv6.execute-api.ap-northeast-2.amazonaws.com") // 외부 API 기본 주소
+                .baseUrl("https://w4bwrqmrv6.execute-api.ap-northeast-2.amazonaws.com/stageAitracker") // 외부 API 기본 주소
                 .defaultHeader("x-api-key", apiKey)
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .build();

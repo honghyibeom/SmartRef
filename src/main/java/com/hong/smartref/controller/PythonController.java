@@ -35,7 +35,7 @@ public class PythonController {
     }
 
     @Operation(summary = "재료 id 기반 내용 검색(복수 가능)", description = "재료 id 기반 내용 검색(복수 가능)")
-    @GetMapping("/get/idInfo")
+    @PostMapping("/get/idInfo")
     public ResponseEntity<List<ExternalIngredientMasterResponse>> getMasterInfo(
             @RequestBody List<Long> masterIds
     ) {
@@ -58,7 +58,7 @@ public class PythonController {
         return ResponseEntity.ok(pythonService.addNicknames(requestList));
     }
 
-    @Operation(summary = "닉네임 추가", description = "닉네임 추가")
+    @Operation(summary = "미스테리 재료 추가", description = "미스테리 재료 추가")
     @PostMapping("/post/mistery/ingredient")
     public ResponseEntity<ExternalMisteryIngredientCreateResponse> createMisteryIngredients(
             @RequestBody List<ExternalMisteryIngredientCreateRequest> requestList

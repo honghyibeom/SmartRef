@@ -2,17 +2,21 @@ package com.hong.smartref.service;
 
 import com.hong.smartref.config.MailService;
 import com.hong.smartref.config.jwt.JwtTokenUtil;
+import com.hong.smartref.config.security.UserDetailsImpl;
 import com.hong.smartref.data.dto.user.*;
 import com.hong.smartref.data.entity.Storage;
 import com.hong.smartref.data.entity.StorageUser;
 import com.hong.smartref.data.entity.User;
+import com.hong.smartref.data.entity.UserDevice;
 import com.hong.smartref.data.enumerate.DefaultStorageColor;
 import com.hong.smartref.data.enumerate.DefaultStorageName;
+import com.hong.smartref.data.enumerate.DeviceType;
 import com.hong.smartref.data.enumerate.StorageType;
 import com.hong.smartref.exception.CustomException;
 import com.hong.smartref.exception.ErrorCode;
 import com.hong.smartref.repository.StorageRepository;
 import com.hong.smartref.repository.StorageUserRepository;
+import com.hong.smartref.repository.UserDeviceRepository;
 import com.hong.smartref.repository.UserRepository;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -42,6 +46,7 @@ public class UserService {
     private final MailService mailService;
     private final StorageRepository storageRepository;
     private final StorageUserRepository storageUserRepository;
+    private final UserDeviceRepository userDeviceRepository;
 
     @Transactional
     public void signup(SignupRequest signupRequest) {
@@ -173,6 +178,23 @@ public class UserService {
         // 4️⃣ 유저 인증 완료
         user.setValid(true);
         userRepository.save(user);
+    }
+
+    @Transactional
+    public void registerDevice(UserDeviceRequest userDeviceRequest, UserDetailsImpl userDetails) {
+
+        Optional<UserDevice> exist = userDeviceRepository.findByFcmToken(userDeviceRequest.getFcmToken());
+
+        if (exist.isPresent()) {
+            exist.get().setUser(userDetails.getUser());
+        } else {
+            UserDevice device = UserDevice.builder()
+                    .fcmToken(userDeviceRequest.getFcmToken())
+                    .user(userDetails.getUser())
+                    .deviceType(userDeviceRequest.getDeviceType())
+                    .build();
+            userDeviceRepository.save(device);
+        }
     }
 
     private void saveRefreshToken(String email, String refreshToken) {

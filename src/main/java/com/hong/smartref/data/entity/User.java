@@ -57,7 +57,7 @@ public class User {
     private List<RecipeLike> recipeLikeList  = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<PushToken> pushTokenList  = new ArrayList<>();
+    private List<UserDevice> userDeviceList  = new ArrayList<>();
 
     @OneToMany(
             mappedBy = "user",

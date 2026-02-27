@@ -8,6 +8,8 @@ import com.hong.smartref.data.dto.user.LoginResponse;
 import com.hong.smartref.data.dto.user.SocialLoginRequest;
 import com.hong.smartref.data.dto.user.SocialUserInfoDTO;
 import com.hong.smartref.data.entity.User;
+import com.hong.smartref.data.entity.UserDevice;
+import com.hong.smartref.repository.UserDeviceRepository;
 import com.hong.smartref.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,6 +40,7 @@ public class GoogleLoginService {
     private final RedisTemplate<String, String> redisTemplate;
     private static final long REFRESH_TOKEN_TTL =
             60L * 24 * 60 * 60;
+    private final UserDeviceRepository userDeviceRepository;
 
     @Value("${spring.security.oauth2.client.registration.google.client-id}")
     private String client_id;
