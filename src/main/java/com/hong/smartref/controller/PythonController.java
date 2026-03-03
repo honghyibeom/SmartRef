@@ -84,7 +84,7 @@ public class PythonController {
 
     @Operation(summary = "ingredient 를 nickname 으로 변환", description = "ingredient 를 nickname 으로 변환")
     @PostMapping("/post/transfer/ingredientToNickname")
-    public ResponseEntity<List<ExternalIngredientToNicknameResponse>> transferIngredientToNickname(
+    public ResponseEntity<ExternalIngredientToNicknameResponse> transferIngredientToNickname(
             @RequestBody List<ExternalIngredientToNicknameRequest> requests
     ) {
         return ResponseEntity.ok(pythonService.transferIngredientToNickname(requests));

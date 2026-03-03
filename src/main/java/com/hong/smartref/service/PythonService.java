@@ -155,7 +155,7 @@ public class PythonService {
     }
 
     //ingredient 를 nickname 으로 변환
-    public List<ExternalIngredientToNicknameResponse> transferIngredientToNickname(
+    public ExternalIngredientToNicknameResponse transferIngredientToNickname(
             List<ExternalIngredientToNicknameRequest> requests
     ) {
         try {
@@ -177,7 +177,7 @@ public class PythonService {
 
         try {
             return recipeRestClient.patch()
-                    .uri("/api/master/patch/ingredient")
+                    .uri("/patch/fooditem")
                     .body(requestList)
                     .retrieve()
                     .body(ExternalPatchIngredientResponse.class);
@@ -228,7 +228,7 @@ public class PythonService {
 
         try {
             return recipeRestClient.method(HttpMethod.DELETE)
-                    .uri("/api/master/delete/nickName")
+                    .uri("/delete/nickName")
                     .body(requestList)
                     .retrieve()
                     .body(ExternalDeleteNicknameResponse.class);
