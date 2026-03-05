@@ -32,7 +32,7 @@ public class Storage {
     @Column(nullable = false)
     private String storageColor;
 
-    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private StorageType storageType;
 
     @Column(nullable = false, updatable = false)

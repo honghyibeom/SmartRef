@@ -32,7 +32,7 @@ public class User {
     @Column(nullable = false)
     private boolean isPremium;
 
-    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private Role role;
 
     @Column(nullable = false)

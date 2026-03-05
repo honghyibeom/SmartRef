@@ -1,6 +1,5 @@
 package com.hong.smartref.data.entity;
 
-import com.hong.smartref.data.enumerate.StorageType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

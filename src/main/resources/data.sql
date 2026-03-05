@@ -29,8 +29,7 @@ INSERT INTO label (name) VALUES
                              ('beverage'),
                              ('leftover'),
                              ('other'),
-                             ('fermented_product')
-    ON CONFLICT (name) DO NOTHING;
+                             ('fermented_product');
 
 
 -- location
@@ -44,5 +43,4 @@ INSERT INTO location (location_id, location_name, location_color) VALUES
                                                                       (7, 'Bottom',  '#F59E0B'),
                                                                       (8, 'Top',     '#8B5CF6'),
                                                                       (9, 'Middle',  '#11B981'),
-                                                                      (10,'Down',    '#8B5CF6')
-    ON CONFLICT (location_id) DO NOTHING;
+                                                                      (10,'Down',    '#8B5CF6');
