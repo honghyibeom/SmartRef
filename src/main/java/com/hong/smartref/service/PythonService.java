@@ -1,5 +1,6 @@
 package com.hong.smartref.service;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.hong.smartref.data.dto.external.*;
 import com.hong.smartref.exception.CustomException;
 import com.hong.smartref.exception.ErrorCode;
@@ -237,6 +238,16 @@ public class PythonService {
             log.error("nickname 삭제 실패", e);
             throw new CustomException(ErrorCode.EXTERNAL_API_ERROR);
         }
+    }
+
+    // 한번 요청으로 한번에 여러 재료를 검색하게끔
+    public JsonNode searchBatch(List<String> ingredients) {
+
+        return recipeRestClient.post()
+                .uri("/search/batch")
+                .body(ingredients)
+                .retrieve()
+                .body(JsonNode.class);
     }
 
 }

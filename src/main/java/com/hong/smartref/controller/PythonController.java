@@ -1,5 +1,6 @@
 package com.hong.smartref.controller;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.hong.smartref.data.dto.ApiResponse;
 import com.hong.smartref.data.dto.external.*;
 import com.hong.smartref.data.dto.food.FoodRequest;
@@ -122,4 +123,10 @@ public class PythonController {
         return ResponseEntity.ok(pythonService.deleteNicknames(requestList));
     }
 
+    @Operation(summary = "검색 여러개 하는거 기능", description = "검색 여러개 하는거 기능")
+    @PostMapping("/searchBatch")
+    public ResponseEntity<JsonNode> searchBatch(@RequestBody List<String> ingredients) {
+
+        return ResponseEntity.ok(pythonService.searchBatch(ingredients));
+    }
 }
