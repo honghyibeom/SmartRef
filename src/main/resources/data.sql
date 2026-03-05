@@ -1,0 +1,48 @@
+-- label
+INSERT INTO label (name) VALUES
+                             ('egg'),
+                             ('fish'),
+                             ('seafood'),
+                             ('meat'),
+                             ('poultry'),
+                             ('processed_meat'),
+                             ('dairy'),
+                             ('cheese'),
+                             ('yogurt'),
+                             ('vegetable'),
+                             ('fruit'),
+                             ('legume'),
+                             ('nut'),
+                             ('seed'),
+                             ('grain'),
+                             ('rice'),
+                             ('noodle'),
+                             ('bread'),
+                             ('oil'),
+                             ('sauce'),
+                             ('spice'),
+                             ('raw'),
+                             ('cooked'),
+                             ('fermented'),
+                             ('snack'),
+                             ('dessert'),
+                             ('beverage'),
+                             ('leftover'),
+                             ('other'),
+                             ('fermented_product')
+    ON CONFLICT (name) DO NOTHING;
+
+
+-- location
+INSERT INTO location (location_id, location_name, location_color) VALUES
+                                                                      (1, 'Fridge',  '#F59E0B'),
+                                                                      (2, 'Freezer', '#8B5CF6'),
+                                                                      (3, 'Fresh',   '#11B981'),
+                                                                      (4, 'Door',    '#F59E0B'),
+                                                                      (5, 'Upper',   '#8B5CF6'),
+                                                                      (6, 'Middle',  '#11B981'),
+                                                                      (7, 'Bottom',  '#F59E0B'),
+                                                                      (8, 'Top',     '#8B5CF6'),
+                                                                      (9, 'Middle',  '#11B981'),
+                                                                      (10,'Down',    '#8B5CF6')
+    ON CONFLICT (location_id) DO NOTHING;

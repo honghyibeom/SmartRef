@@ -135,8 +135,8 @@ public class UserService {
         return new ReissueResponse(newAccessToken);
     }
 
-    public String userCertificationSend (String email) throws MessagingException, UnsupportedEncodingException {
-        User user = userRepository.findByEmail(email)
+    public String userCertificationSend (EmailRequest email) throws MessagingException, UnsupportedEncodingException {
+        User user = userRepository.findByEmail(email.getEmail())
                 .orElseThrow(()-> new CustomException(ErrorCode.NOT_EXIST_USER));
 
         // 1️⃣ 메일 전송 & 코드 생성

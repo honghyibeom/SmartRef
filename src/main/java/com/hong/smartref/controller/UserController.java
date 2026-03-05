@@ -37,8 +37,8 @@ public class UserController {
 
     //인증 메일 전송
     @Operation(summary = "문자 전송 api", description = "문자 인증 전송")
-    @PostMapping("/auth/send/mail/{email}")
-    public ResponseEntity<ApiResponse<String>> userCertificationSend(@PathVariable("email") String email) throws MessagingException, UnsupportedEncodingException {
+    @PostMapping("/auth/send/mail")
+    public ResponseEntity<ApiResponse<String>> userCertificationSend(@RequestBody EmailRequest email) throws MessagingException, UnsupportedEncodingException {
         return ResponseEntity.ok(
                 ApiResponse.success("메일 전송", userService.userCertificationSend(email))
         );
