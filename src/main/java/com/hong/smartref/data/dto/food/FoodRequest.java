@@ -1,14 +1,18 @@
 package com.hong.smartref.data.dto.food;
 
 import com.hong.smartref.data.enumerate.AmountType;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class FoodRequest {
     private Long foodId;
     private Long storageId;
