@@ -22,12 +22,11 @@ public class MailConfig {
 
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
         mailSender.setHost("smtp.naver.com");
-        mailSender.setPort(465);
 
-        // ✅ 반드시 이메일 전체
+        // 🔥 465 → 587 변경
+        mailSender.setPort(587);
+
         mailSender.setUsername(mailId);
-
-        // ✅ 반드시 네이버 앱 비밀번호
         mailSender.setPassword(mailPw);
 
         mailSender.setJavaMailProperties(mailProperties());
@@ -36,15 +35,23 @@ public class MailConfig {
 
     private Properties mailProperties() {
         Properties props = new Properties();
+
         props.put("mail.transport.protocol", "smtp");
         props.put("mail.smtp.auth", "true");
 
-        // ✅ 465는 SSL 전용
-        props.put("mail.smtp.ssl.enable", "true");
-        props.put("mail.smtp.starttls.enable", "false");
+        // 🔥 STARTTLS 사용
+        props.put("mail.smtp.starttls.enable", "true");
+        props.put("mail.smtp.ssl.enable", "false");
 
         props.put("mail.smtp.ssl.trust", "smtp.naver.com");
+
+        // 🔥 무한대기 방지
+        props.put("mail.smtp.connectiontimeout", "5000");
+        props.put("mail.smtp.timeout", "5000");
+        props.put("mail.smtp.writetimeout", "5000");
+
         props.put("mail.debug", "true");
+
         return props;
     }
 }

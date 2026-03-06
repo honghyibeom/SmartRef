@@ -19,7 +19,7 @@ import java.util.List;
 public class ImageController {
     private final S3ImageService s3ImageService;
     @Operation(summary = "이미지 업로드 ",description = "이미지 업로드 api")
-    @PostMapping(value = "/ask/s3")
+    @PostMapping(value = "api/ask/s3")
     public ResponseEntity<ApiResponse<List<String>>> s3Upload(@RequestPart List<MultipartFile> images){
         if (images == null) {
             throw new CustomException(ErrorCode.EMPTY_FILE_EXCEPTION);
