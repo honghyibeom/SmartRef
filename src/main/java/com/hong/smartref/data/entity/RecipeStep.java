@@ -22,7 +22,7 @@ public class RecipeStep {
     private int stepNumber;
 
     @Column(columnDefinition = "TEXT")
-    private String description;
+    private String way;
 
     private String imageUrl;
 }

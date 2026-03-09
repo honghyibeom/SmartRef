@@ -59,6 +59,9 @@ public class RecipeService {
                     .servings(recipeRequest.getServings())
                     .requiredTool(recipeRequest.getRequiredTool())
                     .source(recipeRequest.getSource())
+                    .writtenLang(recipeRequest.getWrittenLang())
+                    .stayRegion(recipeRequest.getStayRegion())
+
                     .visibility(RecipeVisibility.PUBLIC)
                     .build();
             Recipe result = recipeRepository.save(newRecipe);

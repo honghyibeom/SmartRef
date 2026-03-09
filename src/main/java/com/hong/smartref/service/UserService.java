@@ -1,6 +1,5 @@
 package com.hong.smartref.service;
 
-import com.hong.smartref.config.MailService;
 import com.hong.smartref.config.jwt.JwtTokenUtil;
 import com.hong.smartref.config.security.UserDetailsImpl;
 import com.hong.smartref.data.dto.user.*;
@@ -10,7 +9,6 @@ import com.hong.smartref.data.entity.User;
 import com.hong.smartref.data.entity.UserDevice;
 import com.hong.smartref.data.enumerate.DefaultStorageColor;
 import com.hong.smartref.data.enumerate.DefaultStorageName;
-import com.hong.smartref.data.enumerate.DeviceType;
 import com.hong.smartref.data.enumerate.StorageType;
 import com.hong.smartref.exception.CustomException;
 import com.hong.smartref.exception.ErrorCode;
@@ -140,7 +138,7 @@ public class UserService {
                 .orElseThrow(()-> new CustomException(ErrorCode.NOT_EXIST_USER));
 
         // 1️⃣ 메일 전송 & 코드 생성
-        String code = mailService.sendSimpleMessage(user.getEmail());
+        String code = mailService.sendMail(user.getEmail());
 
         // 2️⃣ Redis 저장 (5분)
         String redisKey = "email:cert:" + user.getEmail();

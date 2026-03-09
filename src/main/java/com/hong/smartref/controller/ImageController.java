@@ -6,6 +6,7 @@ import com.hong.smartref.exception.ErrorCode;
 import com.hong.smartref.service.S3ImageService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -19,7 +20,7 @@ import java.util.List;
 public class ImageController {
     private final S3ImageService s3ImageService;
     @Operation(summary = "이미지 업로드 ",description = "이미지 업로드 api")
-    @PostMapping(value = "api/ask/s3")
+    @PostMapping(value = "api/ask/s3", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponse<List<String>>> s3Upload(@RequestPart List<MultipartFile> images){
         if (images == null) {
             throw new CustomException(ErrorCode.EMPTY_FILE_EXCEPTION);

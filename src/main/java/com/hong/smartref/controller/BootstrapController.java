@@ -22,7 +22,7 @@ public class BootstrapController {
 
     @Operation(summary = "부트스트랩 api", description = "자신의 저장고, 음식, 장소 정보를 전부 조회")
     @GetMapping("/bootstrap")
-    public ResponseEntity<ApiResponse<BootStrapRequest>> deleteFood(@AuthenticationPrincipal UserDetailsImpl user) {
+    public ResponseEntity<ApiResponse<BootStrapRequest>> getAllInfo(@AuthenticationPrincipal UserDetailsImpl user) {
          BootStrapRequest bootStrapRequest = BootStrapRequest.builder()
                  .foodItems(foodService.getFoodInfo(user))
                  .locationInfo(storageService.getLocationAll())

@@ -11,6 +11,7 @@ import com.hong.smartref.data.entity.User;
 import com.hong.smartref.data.enumerate.DefaultStorageColor;
 import com.hong.smartref.data.enumerate.DefaultStorageName;
 import com.hong.smartref.data.enumerate.StorageRole;
+import com.hong.smartref.data.enumerate.StorageType;
 import com.hong.smartref.exception.CustomException;
 import com.hong.smartref.exception.ErrorCode;
 import com.hong.smartref.repository.LocationRepository;
@@ -141,23 +142,26 @@ public class StorageService {
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_EXIST_USER));
 
         List<StorageUser> storageUserList = storageUserRepository.findByUser(user);
+
         if (storageUserList.isEmpty()) {
             throw new CustomException(ErrorCode.NOT_EXIST_STORAGE_USER);
         }
-
         List<StorageInfo> storageInfoList = new ArrayList<>();
+
         for (StorageUser storageUser : storageUserList) {
-            StorageInfo storageInfo =  StorageInfo.builder()
-                    .storageColor(storageUser.getStorage().getStorageColor())
-                    .storageName(storageUser.getStorage().getStorageName())
-                    .storageType(storageUser.getStorage().getStorageType())
-                    .storageId(storageUser.getStorage().getStorageId())
-                    .locationIds(storageUser.getStorage().getFoodList().stream()
-                            .map(food -> food.getLocation().getLocationId()).collect(Collectors.toList()))
+            Storage storage = storageUser.getStorage();
+
+            StorageInfo storageInfo = StorageInfo.builder()
+                    .storageColor(storage.getStorageColor())
+                    .storageName(storage.getStorageName())
+                    .storageType(storage.getStorageType())
+                    .storageId(storage.getStorageId())
+                    .locationIds(storage.getStorageType().getLocationIds())
                     .build();
 
             storageInfoList.add(storageInfo);
         }
+
         return storageInfoList;
     }
 

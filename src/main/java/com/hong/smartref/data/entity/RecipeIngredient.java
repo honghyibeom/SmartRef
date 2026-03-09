@@ -1,5 +1,6 @@
 package com.hong.smartref.data.entity;
 
+import com.hong.smartref.data.enumerate.AmountType;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -19,10 +20,13 @@ public class RecipeIngredient {
     private Recipe recipe;
 
     @Column(nullable = false)
-    private String name;
+    private Long masterId;
 
-    // "2개", "100g", "약간"
-    private String amount;
+    private String unit;
 
-    private int orderIndex;
+    private int quantity;
+
+    @Enumerated(EnumType.STRING)
+    private AmountType amountType;
+
 }

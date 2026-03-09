@@ -26,6 +26,15 @@ public class Recipe {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    @Column
+    private String writtenLang;
+
+    @Column
+    private String stayRegion;
+
+    @Column
+    private boolean isUseLocalData;
+
     // ===== Context / Filter Enums =====
     @Enumerated(EnumType.STRING)
     private RecipeType recipeType;
