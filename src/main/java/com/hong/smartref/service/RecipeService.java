@@ -4,10 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hong.smartref.config.security.UserDetailsImpl;
 import com.hong.smartref.data.dto.ApiResponse;
-import com.hong.smartref.data.dto.recipe.GeminiRecipeResponse;
-import com.hong.smartref.data.dto.recipe.RecipeGemini;
-import com.hong.smartref.data.dto.recipe.RecipeIdDTO;
-import com.hong.smartref.data.dto.recipe.RecipeRequest;
+import com.hong.smartref.data.dto.recipe.*;
 import com.hong.smartref.data.entity.*;
 import com.hong.smartref.data.enumerate.RecipeVisibility;
 import com.hong.smartref.exception.CustomException;
@@ -61,7 +58,8 @@ public class RecipeService {
                     .source(recipeRequest.getSource())
                     .writtenLang(recipeRequest.getWrittenLang())
                     .stayRegion(recipeRequest.getStayRegion())
-
+                    .isUseLocalData(recipeRequest.getIsUseLocalData())
+                    .stayRegion(recipeRequest.getStayRegion())
                     .visibility(RecipeVisibility.PUBLIC)
                     .build();
             Recipe result = recipeRepository.save(newRecipe);
@@ -74,21 +72,24 @@ public class RecipeService {
                             .build());
 
             List<RecipeIngredient> ingredients = new ArrayList<>();
-            for (String ingredient  : recipeRequest.getIngredients()) {
+            for (IngredientsDTO ingredient  : recipeRequest.getIngredients()) {
                 ingredients.add(
                         RecipeIngredient.builder()
+                                .masterId(ingredient.getMasterId())
+                                .unit(ingredient.getU())
+                                .quantity(ingredient.getQ())
                                 .recipe(result)
-                                .name(ingredient )
                                 .build()
                 );
             }
             recipeIngredientRepository.saveAll(ingredients);
 
             List<RecipeStep> steps = new ArrayList<>();
-            for (String step : recipeRequest.getSteps()) {
+            for (StepsDTO step : recipeRequest.getSteps()) {
                 steps.add(RecipeStep.builder()
                         .recipe(result)
-                        .description(step)
+                        .way(step.getWay())
+                        .imageUrl(step.getImageUrl())
                         .build()
                 );
             }

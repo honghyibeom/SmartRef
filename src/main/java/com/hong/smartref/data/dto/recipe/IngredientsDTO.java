@@ -7,6 +7,6 @@ import lombok.Data;
 public class IngredientsDTO {
     private Long masterId;
     private AmountType amountType;
-    private Integer quantity;
-    private String unit;
+    private Integer q;
+    private String u;
 }
