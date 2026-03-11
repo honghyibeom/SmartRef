@@ -23,7 +23,7 @@ public class FoodRequest {
     private String unit;
     private LocalDate expired_date;
     private Long locationId;
-    private String ImageUrl;
+    private String imageUrl;
     private String memo;
     private AmountType amountType;
     private Long masterId;

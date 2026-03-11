@@ -22,19 +22,19 @@ public class FoodController {
     private final FoodService foodService;
 
     @Operation(summary = "음식 등록 api", description = "음식 정보를 저장")
-    @PostMapping(value = "/register", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ApiResponse<FoodIdDTO>> insertFood(@RequestPart(value = "foods") List<FoodRequest> foods,
-                                                             @RequestPart(value = "imageUrl", required = false) MultipartFile imageUrl) {
+    @PostMapping(value = "/register")
+    public ResponseEntity<ApiResponse<FoodIdDTO>> insertFood(@RequestBody List<FoodRequest> foods) {
         return ResponseEntity.ok(
-                ApiResponse.success("식품 등록 완료", foodService.addFood(foods, imageUrl))
+                ApiResponse.success("식품 등록 완료", foodService.addFood(foods))
         );
     }
     @Operation(summary = "음식 수정 api", description = "음식 정보를 수정")
     @PostMapping("/edit")
-    public ResponseEntity<ApiResponse<Long>> updateFood(@ModelAttribute FoodRequest foodRequest,
-                                                        @RequestPart(value = "imageUrl", required = false) MultipartFile imageUrl) {
+    public ResponseEntity<ApiResponse<Long>> updateFood(
+            @RequestBody FoodRequest foodRequest) {
+
         return ResponseEntity.ok(
-                ApiResponse.success("식품 수정 완료", foodService.updateFood(foodRequest, imageUrl))
+                ApiResponse.success("식품 수정 완료", foodService.updateFood(foodRequest))
         );
     }
     @Operation(summary = "음식 삭제 api", description = "음식 정보를 삭제")

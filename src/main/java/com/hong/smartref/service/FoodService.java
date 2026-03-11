@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -29,15 +30,9 @@ public class FoodService {
     private final ObjectMapper objectMapper;
 
     //food 생성
-    public FoodIdDTO addFood(List<FoodRequest> foodRequestList, MultipartFile imageUrl) {
+    public FoodIdDTO addFood(List<FoodRequest> foodRequestList) {
         // food를 등록하기 이전에 storage, label, location을 먼저 찾아야 됨.
         List<Long> foodIds = new ArrayList<>();
-
-        // 이미지가 공통이라면 한 번만 업로드
-        String uploadedImageUrl = null;
-        if (imageUrl != null && !imageUrl.isEmpty()) {
-            uploadedImageUrl = s3ImageService.uploadFile(imageUrl);
-        }
 
         for (FoodRequest foodRequest : foodRequestList) {
 
@@ -59,14 +54,10 @@ public class FoodService {
                     foodRequest.getUnit(),
                     foodRequest.getExpired_date(),
                     location,
-                    null,
+                    foodRequest.getImageUrl(),
                     foodRequest.getMemo(),
                     foodRequest.getMasterId()
             );
-
-            if (uploadedImageUrl != null) {
-                food.setImageUrl(uploadedImageUrl);
-            }
 
             Food savedFood = foodRepository.save(food);
             foodIds.add(savedFood.getFoodId());
@@ -78,7 +69,8 @@ public class FoodService {
     }
 
     //food 수정
-    public Long updateFood(FoodRequest foodRequest, MultipartFile foodImage) {
+    @Transactional
+    public Long updateFood(FoodRequest foodRequest) {
         Food food = foodRepository.findById(foodRequest.getFoodId())
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_EXIST_FOOD));
 
@@ -91,6 +83,9 @@ public class FoodService {
             Label label = labelRepository.findByName(foodRequest.getName())
                     .orElseThrow(() -> new CustomException(ErrorCode.NOT_EXIST_LABEL));
             food.setLabel(label);
+        }
+        if(foodRequest.getMasterId() != null) {
+            food.setMasterId(foodRequest.getMasterId());
         }
         if (foodRequest.getName() != null) {
             food.setName(foodRequest.getName());
@@ -115,22 +110,18 @@ public class FoodService {
         if (foodRequest.getMemo() != null) {
             food.setMemo(foodRequest.getMemo());
         }
+        // 이미지 변경 처리
+        if (!Objects.equals(food.getImageUrl(), foodRequest.getImageUrl())) {
 
-        //이미지 조정
-        // 새로운 이미지가 있다면
-        if (foodImage != null) {
-            // 기존 이미지가 있다면
             if (food.getImageUrl() != null) {
                 s3ImageService.deleteFile(food.getImageUrl());
-                String newImage = s3ImageService.uploadFile(foodImage);
-                food.setImageUrl(newImage);
             }
-            // 기존 이미지가 없다면 등록만
-            else {
-                String newImage = s3ImageService.uploadFile(foodImage);
-                food.setImageUrl(newImage);
-            }
+
+            food.setImageUrl(foodRequest.getImageUrl());
         }
+
+        foodRepository.save(food);
+
         return food.getFoodId();
     }
 
@@ -168,7 +159,7 @@ public class FoodService {
 
         // 3️⃣ 외부 API 호출
         String rawResponse = imageAnalyzeRestClient.post()
-                .uri("/stageAitracker/imageAnalyzied")
+                .uri("/imageAnalyzied")
                 .body(externalRequest)
                 .retrieve()
                 .body(String.class);
