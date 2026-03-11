@@ -2,10 +2,7 @@ package com.hong.smartref.controller;
 
 import com.hong.smartref.config.security.UserDetailsImpl;
 import com.hong.smartref.data.dto.ApiResponse;
-import com.hong.smartref.data.dto.recipe.GeminiRecipeResponse;
-import com.hong.smartref.data.dto.recipe.RecipeGemini;
-import com.hong.smartref.data.dto.recipe.RecipeIdDTO;
-import com.hong.smartref.data.dto.recipe.RecipeRequest;
+import com.hong.smartref.data.dto.recipe.*;
 import com.hong.smartref.service.RecipeService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -87,6 +84,14 @@ public class RecipeController {
                         "레시피 재미나이 생성 요청",
                         recipeService.getGemini(recipeGemini,userDetails)
                 )
+        );
+    }
+
+    @Operation(summary = "레시피 검색 api", description = "레시피 검색 api")
+    @PostMapping("/recipe/search")
+    public ResponseEntity<ApiResponse<List<RecipeInfo>>> RecipeSearch(@RequestBody MasterIdDTO masterId) {
+        return ResponseEntity.ok(
+                ApiResponse.success("레시피 검색 결과", recipeService.recipeSearch(masterId))
         );
     }
 }

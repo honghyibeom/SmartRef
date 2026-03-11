@@ -2,22 +2,18 @@ package com.hong.smartref.service;
 
 import com.hong.smartref.config.security.UserDetailsImpl;
 import com.hong.smartref.data.dto.location.LocationInfo;
+import com.hong.smartref.data.dto.storage.LocationMoveRequest;
 import com.hong.smartref.data.dto.storage.StorageInfo;
+import com.hong.smartref.data.dto.storage.StorageMoveRequest;
 import com.hong.smartref.data.dto.storage.StorageRequest;
-import com.hong.smartref.data.entity.Location;
-import com.hong.smartref.data.entity.Storage;
-import com.hong.smartref.data.entity.StorageUser;
-import com.hong.smartref.data.entity.User;
+import com.hong.smartref.data.entity.*;
 import com.hong.smartref.data.enumerate.DefaultStorageColor;
 import com.hong.smartref.data.enumerate.DefaultStorageName;
 import com.hong.smartref.data.enumerate.StorageRole;
 import com.hong.smartref.data.enumerate.StorageType;
 import com.hong.smartref.exception.CustomException;
 import com.hong.smartref.exception.ErrorCode;
-import com.hong.smartref.repository.LocationRepository;
-import com.hong.smartref.repository.StorageRepository;
-import com.hong.smartref.repository.StorageUserRepository;
-import com.hong.smartref.repository.UserRepository;
+import com.hong.smartref.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,6 +30,7 @@ public class StorageService {
     private final UserRepository userRepository;
     private final StorageUserRepository storageUserRepository;
     private final LocationRepository locationRepository;
+    private final FoodRepository foodRepository;
 
     // storage 저장
     @Transactional
@@ -163,6 +160,27 @@ public class StorageService {
         }
 
         return storageInfoList;
+    }
+
+
+    @Transactional
+    public void foodStorageMigration(StorageMoveRequest storageMoveRequest) {
+
+        Storage nextStorage = storageRepository.findById(storageMoveRequest.getNextStorageId())
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_EXIST_STORAGE));
+
+        for (LocationMoveRequest locationMoveRequest : storageMoveRequest.getList()) {
+
+            Location nextLocation = locationRepository.findById(locationMoveRequest.getNextLocationId())
+                    .orElseThrow(() -> new CustomException(ErrorCode.NOT_EXIST_LOCATION));
+
+            List<Food> foods = foodRepository.findAllById(locationMoveRequest.getFoodIdList());
+
+            for (Food food : foods) {
+                food.setStorage(nextStorage);
+                food.setLocation(nextLocation);
+            }
+        }
     }
 
 }

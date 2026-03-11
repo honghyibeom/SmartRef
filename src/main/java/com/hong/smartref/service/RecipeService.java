@@ -19,6 +19,7 @@ import org.springframework.web.client.RestClient;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -76,8 +77,8 @@ public class RecipeService {
                 ingredients.add(
                         RecipeIngredient.builder()
                                 .masterId(ingredient.getMasterId())
-                                .unit(ingredient.getU())
-                                .quantity(ingredient.getQ())
+                                .unit(ingredient.getUnit())
+                                .quantity(ingredient.getQuantity())
                                 .recipe(result)
                                 .build()
                 );
@@ -210,5 +211,65 @@ public class RecipeService {
                     "Gemini 응답 파싱 실패. rawResponse=" + rawResponse, e
             );
         }
+    }
+
+    public List<RecipeInfo> recipeSearch(MasterIdDTO masterId) {
+
+        List<Recipe> recipes = recipeRepository.findRecipesByMasterIds(masterId.getMasterId());
+        if (recipes.isEmpty()) {
+            throw new CustomException(ErrorCode.NOT_EXIST_RECIPE);
+        }
+
+        List<RecipeInfo> recipeInfoList = new ArrayList<>();
+        for (Recipe recipe : recipes) {
+            List<IngredientsDTO> ingredients = new ArrayList<>();
+            for (RecipeIngredient ingredient : recipe.getIngredients()) {
+                IngredientsDTO ingredientsDTO = IngredientsDTO
+                        .builder()
+                        .unit(ingredient.getUnit())
+                        .quantity(ingredient.getQuantity())
+                        .amountType(ingredient.getAmountType())
+                        .masterId(ingredient.getMasterId())
+                        .build();
+                ingredients.add(ingredientsDTO);
+            }
+
+            List<StepsDTO> steps = new ArrayList<>();
+            for (RecipeStep step : recipe.getSteps()) {
+                StepsDTO stepsDTO = StepsDTO.builder()
+                        .imageUrl(step.getImageUrl())
+                        .way(step.getWay())
+                        .build();
+                steps.add(stepsDTO);
+            }
+
+            RecipeInfo recipeInfo = RecipeInfo.builder()
+                    .title(recipe.getTitle())
+                    .recipeType(recipe.getRecipeType())
+                    .writtenLang(recipe.getWrittenLang())
+                    .category(recipe.getCategory())
+                    .cookingMethod(recipe.getCookingMethod())
+                    .technique(recipe.getTechnique())
+                    .dietaryGoal(recipe.getDietaryGoal())
+                    .dietaryRestriction(recipe.getDietaryRestriction())
+                    .primaryIngredient(recipe.getPrimaryIngredient())
+                    .occasion(recipe.getOccasion())
+                    .difficulty(recipe.getDifficulty())
+                    .cookingTime(recipe.getCookingTime())
+                    .cuisineRegion(recipe.getCuisineRegion())
+                    .servings(recipe.getServings())
+                    .requiredTool(recipe.getRequiredTool())
+                    .ingredients(ingredients)
+                    .steps(steps)
+                    .source(recipe.getSource())
+                    .visibility(recipe.getVisibility())
+                    .isUseLocalData(recipe.isUseLocalData())
+                    .stayRegion(recipe.getStayRegion())
+                    .build();
+
+            recipeInfoList.add(recipeInfo);
+        }
+
+        return recipeInfoList;
     }
 }
