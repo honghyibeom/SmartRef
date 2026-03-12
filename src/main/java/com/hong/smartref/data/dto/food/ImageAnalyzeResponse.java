@@ -12,24 +12,19 @@ import java.util.List;
 @AllArgsConstructor
 public class ImageAnalyzeResponse {
 
-    private List<Item> items;
+    private List<Item> resultItem;
 
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Item {
+
         private String name;
         private String label;
         private LocalDate expiryDate;
-        private Quantity quantity;
-    }
 
-    @Getter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class Quantity {
-        private String type;
-        private int value;
+        private String amountType;
+        private Integer quantity;
         private String unit;
     }
 }
