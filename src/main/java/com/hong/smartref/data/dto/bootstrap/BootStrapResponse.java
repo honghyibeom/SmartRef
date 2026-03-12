@@ -15,7 +15,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class BootStrapRequest {
+public class BootStrapResponse {
     @JsonProperty("storage_info")
     private List<StorageInfo> storageInfo;
 
