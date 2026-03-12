@@ -8,13 +8,12 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface RecipeRepository extends JpaRepository<Recipe, Long> {
-    @EntityGraph(attributePaths = {"ingredients", "steps"})
     @Query("""
-    SELECT DISTINCT r
-    FROM Recipe r
-    JOIN r.ingredients ri
-    WHERE ri.masterId IN :masterIds
-    """)
+            SELECT DISTINCT r
+            FROM Recipe r
+            JOIN r.ingredients ri
+            WHERE ri.masterId IN :masterIds
+            """)
     List<Recipe> findRecipesByMasterIds(List<Long> masterIds);
 
 }

@@ -91,6 +91,7 @@ public class RecipeService {
                         .recipe(result)
                         .way(step.getWay())
                         .imageUrl(step.getImageUrl())
+                        .stepNumber(step.getStepNumber())
                         .build()
                 );
             }

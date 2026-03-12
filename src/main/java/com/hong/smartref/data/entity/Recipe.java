@@ -96,7 +96,6 @@ public class Recipe {
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
-    @OrderBy("orderIndex ASC")
     private List<RecipeIngredient> ingredients;
 
     @OneToMany(

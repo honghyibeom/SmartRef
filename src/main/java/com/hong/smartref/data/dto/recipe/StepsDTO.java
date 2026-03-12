@@ -8,4 +8,5 @@ import lombok.Data;
 public class StepsDTO {
     private String way;
     private String imageUrl;
+    private int stepNumber;
 }
