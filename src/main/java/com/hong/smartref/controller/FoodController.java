@@ -56,8 +56,7 @@ public class FoodController {
     @Operation(summary = "음식 재미나이 요청 api", description = "음식 재미나이 요청")
     @PostMapping("/gemini")
     public ResponseEntity<ApiResponse<ImageAnalyzeResponse>> analyzeImage(
-            @RequestBody ImageAnalyzeRequest request,
-            @AuthenticationPrincipal UserDetailsImpl userDetails
+            @RequestBody ImageAnalyzeRequest request
     ) {
         return ResponseEntity.ok(
                 ApiResponse.success(
