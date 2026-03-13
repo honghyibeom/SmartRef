@@ -80,7 +80,7 @@ public class FoodService {
             food.setStorage(storage);
         }
         if (foodRequest.getLabel() != null) {
-            Label label = labelRepository.findByName(foodRequest.getName())
+            Label label = labelRepository.findByName(foodRequest.getLabel())
                     .orElseThrow(() -> new CustomException(ErrorCode.NOT_EXIST_LABEL));
             food.setLabel(label);
         }
