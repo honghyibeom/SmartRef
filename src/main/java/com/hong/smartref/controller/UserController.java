@@ -4,11 +4,13 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.hong.smartref.config.security.UserDetailsImpl;
 import com.hong.smartref.data.dto.ApiResponse;
 import com.hong.smartref.data.dto.user.*;
+import com.hong.smartref.data.entity.User;
 import com.hong.smartref.service.*;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
@@ -92,5 +94,11 @@ public class UserController {
                                                             @AuthenticationPrincipal UserDetailsImpl userDetails) {
         userService.registerDevice(userDeviceRequest, userDetails);
         return ResponseEntity.ok(ApiResponse.success("FCM 등록 성공"));
+    }
+
+    @Operation(summary = "유저 정보 받아오기", description = "유저 정보 가져오기")
+    @GetMapping("/user/get/userInformation")
+    public ResponseEntity<ApiResponse<UserInfo>> getUserInformation(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return ResponseEntity.ok(ApiResponse.success("유저 조회 성공", userService.getUserInfo(userDetails)));
     }
 }

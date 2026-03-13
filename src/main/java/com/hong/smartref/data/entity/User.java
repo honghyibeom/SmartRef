@@ -30,7 +30,7 @@ public class User {
     private String nicknameColor;
 
     @Column(nullable = false)
-    private boolean isPremium;
+    private Boolean isPremium;
 
     @Enumerated(EnumType.STRING)
     private Role role;

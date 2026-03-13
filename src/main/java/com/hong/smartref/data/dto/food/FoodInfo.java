@@ -25,6 +25,7 @@ public class FoodInfo {
     private String imageUrl;
     private String memo;
     private AmountType amountType;
+    private Long masterId;
 
     public FoodInfo(
             Long foodId,
@@ -38,7 +39,8 @@ public class FoodInfo {
             Boolean isFavorite,
             String imageUrl,
             String memo,
-            AmountType amountType
+            AmountType amountType,
+            Long masterId
     ) {
         this.foodId = foodId;
         this.storageId = storageId;
@@ -52,5 +54,6 @@ public class FoodInfo {
         this.imageUrl = imageUrl;
         this.memo = memo;
         this.amountType = amountType;
+        this.masterId = masterId;
     }
 }

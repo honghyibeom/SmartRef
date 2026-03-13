@@ -25,7 +25,8 @@ public interface FoodRepository extends JpaRepository<Food, Long> {
               CASE WHEN ff.foodFavoriteId IS NOT NULL THEN true ELSE false END,
               f.imageUrl,
               f.memo,
-              f.amountType
+              f.amountType,
+              f.masterId
         )
         FROM Food f
         JOIN f.storage s

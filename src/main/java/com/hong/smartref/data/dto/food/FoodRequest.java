@@ -21,7 +21,7 @@ public class FoodRequest {
     private String name;
     private Double quantity;
     private String unit;
-    private LocalDate expired_date;
+    private LocalDate expiryDate;
     private Long locationId;
     private String imageUrl;
     private String memo;

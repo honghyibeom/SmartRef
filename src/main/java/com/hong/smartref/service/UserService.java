@@ -195,6 +195,14 @@ public class UserService {
         }
     }
 
+    public UserInfo getUserInfo(UserDetailsImpl userDetails) {
+        return UserInfo.builder()
+                .color(userDetails.getUser().getNicknameColor())
+                .isPremium(userDetails.getUser().getIsPremium())
+                .username(userDetails.getUser().getNickname())
+                .build();
+    }
+
     private void saveRefreshToken(String email, String refreshToken) {
         String key = "refresh:email:" + email.toLowerCase();
 

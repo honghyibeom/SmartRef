@@ -77,8 +77,8 @@ public class StorageService {
         String color = Optional.ofNullable(storageRequest.getStorageColor())
                 .orElse(DefaultStorageColor.getRandomColor());
 
-        storage.setStorageColor(name);
-        storage.setStorageName(color);
+        storage.setStorageColor(color);
+        storage.setStorageName(name);
         Storage result = storageRepository.save(storage);
         return result.getStorageId();
     }

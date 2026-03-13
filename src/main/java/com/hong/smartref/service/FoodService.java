@@ -52,7 +52,7 @@ public class FoodService {
                     foodRequest.getAmountType(),
                     foodRequest.getQuantity(),
                     foodRequest.getUnit(),
-                    foodRequest.getExpired_date(),
+                    foodRequest.getExpiryDate(),
                     location,
                     foodRequest.getImageUrl(),
                     foodRequest.getMemo(),
@@ -96,8 +96,8 @@ public class FoodService {
         if (foodRequest.getUnit() != null) {
             food.setUnit(foodRequest.getUnit());
         }
-        if (foodRequest.getExpired_date() != null) {
-            food.setExpiredAt(foodRequest.getExpired_date());
+        if (foodRequest.getExpiryDate() != null) {
+            food.setExpiredAt(foodRequest.getExpiryDate());
         }
         if (foodRequest.getLocationId() != null) {
             Location location = locationRepository.findById(foodRequest.getLocationId())

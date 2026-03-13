@@ -13,6 +13,6 @@ import lombok.NoArgsConstructor;
 public class StorageRequest {
     private Long storageId;
     private String storageName;
-    private String StorageColor;
+    private String storageColor;
     private StorageType storageType;
 }
