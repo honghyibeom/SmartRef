@@ -8,22 +8,26 @@ import java.util.List;
 public class RecipeItem {
     private String title;
     private String recipeType;
-    private String cooking_method;
     private String occasion;
-    private String dietary_goal;
-    private String dietary_restriction;
-    private String primary_ingredient;
+    private String cookingMethod;
+    private String dietaryGoal;
+    private String dietaryRestriction;
+    private String primaryIngredient;
     private String category;
     private String technique;
     private String difficulty;
-    private String cooking_time;
-    private String cuisine_region;
+    private String cookingTime;
+    private String cuisineRegion;
     private String servings;
-    private String required_tool;
-    private List<String> ingredients;
-    private List<String> steps;
-    private String ai;
-    private String visibility;
-    private String stay_region;
+    private String requiredTool;
+    private String writtenLang;
+
+    private List<IngredientsDTO> ingredients;
+    private List<IngredientsDTO> mIngredients;
+    private List<WayDTO> steps;
+
+    private String stayRegion;
     private boolean isUseLocalData;
+    private String source;
+    private String visibility;
 }

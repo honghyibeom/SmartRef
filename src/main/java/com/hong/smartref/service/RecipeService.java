@@ -191,7 +191,7 @@ public class RecipeService {
         userRepository.save(user);
 
         String rawResponse = recipeRestClient.post()
-                .uri("/stageAitracker/recipe")
+                .uri("/recipe")
                 .body(recipeGemini)
                 .retrieve()
                 .body(String.class);
