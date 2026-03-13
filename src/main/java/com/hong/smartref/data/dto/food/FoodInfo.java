@@ -11,7 +11,6 @@ import java.time.LocalDate;
 @Getter
 @Builder
 @NoArgsConstructor
-@AllArgsConstructor
 public class FoodInfo {
     private Long foodId;
     private Long storageId;
@@ -21,7 +20,7 @@ public class FoodInfo {
     private String unit;
     private LocalDate expiryDate;
     private Long locationId;
-    private boolean isFavorite;
+    private Boolean isFavorite;
     private String imageUrl;
     private String memo;
     private AmountType amountType;
