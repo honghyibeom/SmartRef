@@ -129,4 +129,11 @@ public class PythonController {
 
         return ResponseEntity.ok(pythonService.searchBatch(ingredients));
     }
+
+    @Operation(summary = "검색 여러 masterId로 하는 기능", description = "검색 여러 masterId로 하는 기능")
+    @PostMapping("/searchIdBatch")
+    public ResponseEntity<JsonNode> searchBatchId(@RequestBody List<Long> masterIds) {
+
+        return ResponseEntity.ok(pythonService.searchBatchId(masterIds));
+    }
 }

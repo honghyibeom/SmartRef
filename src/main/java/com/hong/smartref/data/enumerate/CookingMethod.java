@@ -1,19 +1,22 @@
 package com.hong.smartref.data.enumerate;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+
 public enum CookingMethod implements DisplayEnum {
-    GRILL("Grill"),
-    BOIL("Boil"),
-    BLANCH("Blanch"),
-    MIX("Mix"),
-    STIR_FRY("Stir-fry"),
-    PAN_FRY("Pan-fry"),
-    TOSS("Toss"),
-    SIMMER("Simmer"),
-    PICKLED("Pickled"),
-    BRAISE("Braise"),
-    STEAM("Steam"),
-    DEEP_FRY("Deep-fry"),
-    RAW("Raw");
+    GRILL("grill"),
+    BOIL("boil"),
+    BLANCH("blanch"),
+    MIX("mix"),
+    STIR_FRY("stir-fry"),
+    PAN_FRY("pan-fry"),
+    TOSS("toss"),
+    SIMMER("simmer"),
+    PICKLED("pickled"),
+    BRAISE("braise"),
+    STEAM("steam"),
+    DEEP_FRY("deep-fry"),
+    RAW("raw");
 
     private final String value;
 
@@ -22,8 +25,19 @@ public enum CookingMethod implements DisplayEnum {
     }
 
     @Override
+    @JsonValue
     public String getValue() {
         return value;
+    }
+
+    @JsonCreator
+    public static CookingMethod from(String value) {
+        for (CookingMethod type : values()) {
+            if (type.value.equalsIgnoreCase(value)) {
+                return type;
+            }
+        }
+        throw new IllegalArgumentException(value);
     }
 }
 

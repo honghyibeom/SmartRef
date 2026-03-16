@@ -1,5 +1,8 @@
 package com.hong.smartref.data.enumerate;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+
 public enum Servings implements DisplayEnum {
     ONE("1"),
     TWO("2"),
@@ -13,7 +16,18 @@ public enum Servings implements DisplayEnum {
     }
 
     @Override
+    @JsonValue
     public String getValue() {
         return value;
+    }
+
+    @JsonCreator
+    public static Servings from(String value) {
+        for (Servings type : values()) {
+            if (type.value.equalsIgnoreCase(value)) {
+                return type;
+            }
+        }
+        throw new IllegalArgumentException(value);
     }
 }

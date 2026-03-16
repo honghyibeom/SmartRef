@@ -1,23 +1,26 @@
 package com.hong.smartref.data.enumerate;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+
 public enum RecipeCategory implements DisplayEnum {
-    MAIN_DISH("Main Dish"),
-    SIDE_DISH("Side Dish"),
-    SOUP_STEW("Soup/Stew"),
-    RICE_PORRIDGE("Rice/Porridge"),
-    NOODLE_DUMPLING("Noodle/Dumpling"),
-    SNACK_COOKIE("Snack/Cookie"),
-    DESSERT("Dessert"),
-    BREAD("Bread"),
-    SALAD("Salad"),
-    SOUP("Soup"),
-    SAUCE_JAM("Sauce/Jam"),
-    KIMCHI_PASTE("Kimchi/Paste"),
-    WESTERN("Western"),
-    STEW("Stew"),
-    DRINK_ALCOHOL("Drink/Alcohol"),
-    FUSION("Fusion"),
-    ETC("Etc");
+    SNACK_COOKIE("snack-cookie"),
+    SOUP_STEW("soup-stew"),
+    ETC("etc"),
+    KIMCHI_PASTE("kimchi-paste"),
+    DESSERT("dessert"),
+    MAIN_DISH("main-dish"),
+    NOODLE_DUMPLING("noodle-dumpling"),
+    SIDE_DISH("side-dish"),
+    RICE_PORRIDGE("rice-porridge"),
+    BREAD("bread"),
+    SALAD("salad"),
+    SOUP("soup"),
+    SAUCE_JAM("sauce-jam"),
+    WESTERN("western"),
+    STEW("stew"),
+    DRINK_ALCOHOL("drink-alcohol"),
+    FUSION("fusion");
 
     private final String value;
 
@@ -26,8 +29,19 @@ public enum RecipeCategory implements DisplayEnum {
     }
 
     @Override
+    @JsonValue
     public String getValue() {
         return value;
+    }
+
+    @JsonCreator
+    public static RecipeCategory from(String value) {
+        for (RecipeCategory type : values()) {
+            if (type.value.equalsIgnoreCase(value)) {
+                return type;
+            }
+        }
+        throw new IllegalArgumentException(value);
     }
 }
 

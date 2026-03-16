@@ -1,6 +1,7 @@
 package com.hong.smartref.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.google.protobuf.Api;
 import com.hong.smartref.config.security.UserDetailsImpl;
 import com.hong.smartref.data.dto.ApiResponse;
 import com.hong.smartref.data.dto.user.*;
@@ -9,6 +10,7 @@ import com.hong.smartref.service.*;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
@@ -100,5 +102,30 @@ public class UserController {
     @GetMapping("/user/get/userInformation")
     public ResponseEntity<ApiResponse<UserInfo>> getUserInformation(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         return ResponseEntity.ok(ApiResponse.success("유저 조회 성공", userService.getUserInfo(userDetails)));
+    }
+
+    @Operation(summary = "비밀번호 재생성 코드 전송 api", description = "비밀번호 재생성 코드 전송")
+    @PostMapping("/auth/recreatePassword")
+    public ResponseEntity<ApiResponse<Void>> recreatePasswordCode(@RequestBody EmailRequest request) {
+        userService.recreatePasswordCode(request);
+        return ResponseEntity.ok(ApiResponse.success("password reset verification code sent"));
+    }
+
+    @Operation(summary = "비밀번호 재생성 코드 인증 api", description = "비밀번호 재생성 코드 인증 api")
+    @PostMapping("/auth/recreatePassword/validate")
+    public ResponseEntity<ApiResponse<Void>> passwordCertification(@RequestBody MailCheckRequest mailCheckRequest) {
+        userService.passwordCertification(mailCheckRequest);
+        return ResponseEntity.ok(
+                ApiResponse.success("code verification complete")
+        );
+    }
+
+    @Operation(summary = "새로운 비번 전달 api", description = "새로운 비번 전달 api")
+    @PostMapping("/auth/recreatePassword/reset")
+    public ResponseEntity<ApiResponse<Void>> newPassword(@RequestBody LoginRequest loginRequest) {
+        userService.setNewPassword(loginRequest);
+        return ResponseEntity.ok(
+                ApiResponse.success("비번 변경 완료")
+        );
     }
 }

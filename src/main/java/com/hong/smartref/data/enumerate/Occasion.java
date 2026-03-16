@@ -1,19 +1,22 @@
 package com.hong.smartref.data.enumerate;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
 
 public enum Occasion implements DisplayEnum {
-    EVERYDAY("Everyday"),
-    QUICK("Quick"),
-    SNACK("Snack"),
-    DIET("Diet"),
-    LUNCHBOX("Lunchbox"),
-    HOLIDAY("Holiday"),
-    GUEST("Guest"),
-    SIDE_DISH_ALCOHOL("Side Dish (Alcohol)"),
-    LATE_NIGHT("Late-night"),
-    BABY("Baby"),
-    HANGOVER("Hangover");
+
+    SNACK("snack"),
+    DIET("diet"),
+    LUNCHBOX("lunchbox"),
+    HOLIDAY("holiday"),
+    GUEST("guest"),
+    SIDE_DISH_ALCOHOL("side-dish-alcohol"),
+    LATE_NIGHT("late-night"),
+    BABY("baby"),
+    EVERYDAY("everyday"),
+    QUICK("quick"),
+    HANGOVER("hangover");
 
     private final String value;
 
@@ -22,8 +25,19 @@ public enum Occasion implements DisplayEnum {
     }
 
     @Override
+    @JsonValue
     public String getValue() {
         return value;
+    }
+
+    @JsonCreator
+    public static Occasion from(String value) {
+        for (Occasion type : values()) {
+            if (type.value.equalsIgnoreCase(value)) {
+                return type;
+            }
+        }
+        throw new IllegalArgumentException(value);
     }
 }
 

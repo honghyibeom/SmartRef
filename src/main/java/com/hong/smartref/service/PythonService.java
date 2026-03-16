@@ -250,4 +250,14 @@ public class PythonService {
                 .body(JsonNode.class);
     }
 
+    // 한번 요청으로 한번에 여러 재료를 검색하게끔(Id)
+    public JsonNode searchBatchId(List<Long> masterIds) {
+
+        return recipeRestClient.post()
+                .uri("/search/batch/id")
+                .body(masterIds)
+                .retrieve()
+                .body(JsonNode.class);
+    }
+
 }

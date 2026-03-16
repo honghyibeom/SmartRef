@@ -1,10 +1,13 @@
 package com.hong.smartref.data.enumerate;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+
 public enum DietaryGoal implements DisplayEnum {
-    STANDARD("Standard"),
-    LOW_SODIUM("Low-Sodium"),
-    LOW_CARB("Low-Carb"),
-    HIGH_PROTEIN("High-Protein");
+    LOW_SODIUM("low-sodium"),
+    LOW_CARB("low-carb"),
+    HIGH_PROTEIN("high-protein"),
+    STANDARD("standard");
 
     private final String value;
 
@@ -13,7 +16,18 @@ public enum DietaryGoal implements DisplayEnum {
     }
 
     @Override
+    @JsonValue
     public String getValue() {
         return value;
+    }
+
+    @JsonCreator
+    public static DietaryGoal from(String value) {
+        for (DietaryGoal type : values()) {
+            if (type.value.equalsIgnoreCase(value)) {
+                return type;
+            }
+        }
+        throw new IllegalArgumentException(value);
     }
 }

@@ -1,19 +1,22 @@
 package com.hong.smartref.data.enumerate;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+
 public enum CuisineRegion implements DisplayEnum {
-    KOREAN("Korean"),
-    JAPANESE("Japanese"),
-    CHINESE("Chinese"),
-    THAI("Thai"),
-    VIETNAMESE("Vietnamese"),
-    FRENCH("French"),
-    ITALIAN("Italian"),
-    MEXICAN("Mexican"),
-    INDIAN("Indian"),
-    MIDDLE_EASTERN("Middle-Eastern"),
-    WESTERN("Western"),
-    FUSION("Fusion"),
-    GLOBAL("Global");
+    KOREAN("korean"),
+    JAPANESE("japanese"),
+    CHINESE("chinese"),
+    THAI("thai"),
+    VIETNAMESE("vietnamese"),
+    FRENCH("french"),
+    ITALIAN("italian"),
+    MEXICAN("mexican"),
+    INDIAN("indian"),
+    MIDDLE_EASTERN("middle-eastern"),
+    WESTERN("western"),
+    FUSION("fusion"),
+    GLOBAL("global");
 
     private final String value;
 
@@ -22,8 +25,19 @@ public enum CuisineRegion implements DisplayEnum {
     }
 
     @Override
+    @JsonValue
     public String getValue() {
         return value;
+    }
+
+    @JsonCreator
+    public static CuisineRegion from(String value) {
+        for (CuisineRegion type : values()) {
+            if (type.value.equalsIgnoreCase(value)) {
+                return type;
+            }
+        }
+        throw new IllegalArgumentException(value);
     }
 }
 

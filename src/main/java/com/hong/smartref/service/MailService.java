@@ -21,21 +21,36 @@ public class MailService {
     @Value("${mail.from}")
     private String from;
 
-    public String sendMail(String to) {
+    public String sendMail(String to, String gbn) {
 
-        // 🔥 6자리 인증코드 생성
         String code = generateCode();
 
         Map<String, Object> body = new HashMap<>();
-        body.put("from", from);
-        body.put("to", List.of(to));
-        body.put("subject", "SmartRef 이메일 인증");
+        if (gbn.equals("cert")) {
+            // 🔥 6자리 인증코드 생성
+            body.put("from", from);
+            body.put("to", List.of(to));
+            body.put("subject", "SmartRef 이메일 인증");
 
-        body.put("html",
-                "<h2>SmartRef 이메일 인증</h2>" +
-                        "<p>아래 인증코드를 입력하세요.</p>" +
-                        "<h1>" + code + "</h1>"
-        );
+            body.put("html",
+                    "<h2>SmartRef 이메일 인증</h2>" +
+                            "<p>아래 인증코드를 입력하세요.</p>" +
+                            "<h1>" + code + "</h1>"
+            );
+        }
+        else if (gbn.equals("password")) {
+            // 🔥 6자리 인증코드 생성
+
+            body.put("from", from);
+            body.put("to", List.of(to));
+            body.put("subject", "SmartRef 비밀번호 재설정 인증 코드");
+
+            body.put("html",
+                    "<h2>SmartRef 비밀번호 재설정 인증 코드</h2>" +
+                            "<p>아래 인증코드를 입력하세요.</p>" +
+                            "<h1>" + code + "</h1>"
+            );
+        }
 
         restClient.post()
                 .uri("https://api.resend.com/emails")

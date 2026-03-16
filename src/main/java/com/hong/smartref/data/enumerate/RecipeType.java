@@ -1,14 +1,18 @@
 package com.hong.smartref.data.enumerate;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+
 public enum RecipeType implements DisplayEnum {
-    EVERYDAY("Everyday"),
-    QUICK("Quick"),
-    HEALTHY("Healthy"),
-    LEFTOVER("Leftover"),
-    PREMIUM("Premium"),
-    SNACK("Snack"),
-    BABY("Baby"),
-    DRINK("Drink");
+
+    EVERYDAY("everyday"),
+    QUICK("quick"),
+    HEALTHY("healthy"),
+    LEFTOVER("leftover"),
+    PREMIUM("premium"),
+    SNACK("snack"),
+    BABY("baby"),
+    DRINK("drink");
 
     private final String value;
 
@@ -17,8 +21,19 @@ public enum RecipeType implements DisplayEnum {
     }
 
     @Override
+    @JsonValue
     public String getValue() {
         return value;
+    }
+
+    @JsonCreator
+    public static RecipeType from(String value) {
+        for (RecipeType type : values()) {
+            if (type.value.equalsIgnoreCase(value)) {
+                return type;
+            }
+        }
+        throw new IllegalArgumentException("Unknown RecipeType: " + value);
     }
 }
 

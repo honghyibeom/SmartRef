@@ -138,7 +138,7 @@ public class UserService {
                 .orElseThrow(()-> new CustomException(ErrorCode.NOT_EXIST_USER));
 
         // 1️⃣ 메일 전송 & 코드 생성
-        String code = mailService.sendMail(user.getEmail());
+        String code = mailService.sendMail(user.getEmail(), "cert");
 
         // 2️⃣ Redis 저장 (5분)
         String redisKey = "email:cert:" + user.getEmail();
@@ -152,6 +152,7 @@ public class UserService {
         return code; // (보통은 반환 안 함, 테스트용이면 OK)
     }
 
+    @Transactional
     public void userCertification (MailCheckRequest mailCheckRequest) {
         User user = userRepository.findByEmail(mailCheckRequest.getEmail())
                 .orElseThrow(()-> new CustomException(ErrorCode.NOT_EXIST_USER));
@@ -201,6 +202,52 @@ public class UserService {
                 .isPremium(userDetails.getUser().getIsPremium())
                 .username(userDetails.getUser().getNickname())
                 .build();
+    }
+
+    public void recreatePasswordCode(EmailRequest email) {
+        // 1️⃣ 메일 전송 & 코드 생성
+        String code = mailService.sendMail(email.getEmail(),"password");
+
+        // 2️⃣ Redis 저장 (5분)
+        String redisKey = "email:password:" + email.getEmail();
+        redisTemplate.opsForValue().set(
+                redisKey,
+                code,
+                5,
+                TimeUnit.MINUTES
+        );
+    }
+
+    public void passwordCertification (MailCheckRequest mailCheckRequest) {
+        User user = userRepository.findByEmail(mailCheckRequest.getEmail())
+                .orElseThrow(()-> new CustomException(ErrorCode.NOT_EXIST_USER));
+
+        String redisKey = "email:password:" + user.getEmail();
+
+        // 1️⃣ Redis에서 코드 조회
+        String savedCode = redisTemplate.opsForValue().get(redisKey);
+
+        if (savedCode == null) {
+            throw new CustomException(ErrorCode.EXPIRED_CERT_CODE);
+        }
+
+        // 2️⃣ 코드 비교
+        if (!savedCode.equals(mailCheckRequest.getCode())) {
+            throw new CustomException(ErrorCode.INVALID_CERT_CODE);
+        }
+
+        // 3️⃣ 인증 성공 → Redis 삭제
+        redisTemplate.delete(redisKey);
+
+    }
+
+    @Transactional
+    public void setNewPassword(LoginRequest loginRequest) {
+        User user = userRepository.findByEmail(loginRequest.getEmail())
+                .orElseThrow(()-> new CustomException(ErrorCode.NOT_EXIST_USER));
+
+        user.setPassword(passwordEncoder.encode(loginRequest.getPassword()));
+        userRepository.save(user);
     }
 
     private void saveRefreshToken(String email, String refreshToken) {

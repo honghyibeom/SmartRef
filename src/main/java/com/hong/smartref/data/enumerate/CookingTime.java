@@ -1,12 +1,15 @@
 package com.hong.smartref.data.enumerate;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+
 public enum CookingTime implements DisplayEnum {
     MIN_5("5min"),
     MIN_10("10min"),
     MIN_20("20min"),
     MIN_30("30min"),
     MIN_45("45min"),
-    HOUR_1_PLUS("1h+");
+    OVER_1H("1h+");
 
     private final String value;
 
@@ -15,8 +18,19 @@ public enum CookingTime implements DisplayEnum {
     }
 
     @Override
+    @JsonValue
     public String getValue() {
         return value;
+    }
+
+    @JsonCreator
+    public static CookingTime from(String value) {
+        for (CookingTime type : values()) {
+            if (type.value.equalsIgnoreCase(value)) {
+                return type;
+            }
+        }
+        throw new IllegalArgumentException(value);
     }
 }
 

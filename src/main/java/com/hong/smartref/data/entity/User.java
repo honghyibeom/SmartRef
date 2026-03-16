@@ -20,6 +20,7 @@ public class User {
     @Id
     private String email;
 
+    @Setter
     @Column(nullable = true)
     private String password;
 
@@ -88,7 +89,7 @@ public class User {
     }
 
     public void setValid(boolean valid) {
-        isValid = valid;
+        this.isValid = valid;
     }
 
 }
