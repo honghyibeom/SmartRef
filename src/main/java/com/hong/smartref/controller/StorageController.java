@@ -66,7 +66,7 @@ public class StorageController {
     }
 
     @Operation(summary = "food storage 마이그레이션 api", description = "food storage 마이그레이션.")
-    @GetMapping("/swap")
+    @PostMapping("/swap")
     public ResponseEntity<ApiResponse<Void>> foodStorageMigration(@RequestBody StorageMoveRequest storageMoveRequest) {
         storageService.foodStorageMigration(storageMoveRequest);
         return ResponseEntity.ok(

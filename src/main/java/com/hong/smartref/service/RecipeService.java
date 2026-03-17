@@ -100,6 +100,79 @@ public class RecipeService {
         return RecipeIdDTO.from(recipeIds);
     }
 
+    @Transactional
+    public Long updateRecipe(RecipeRequest recipeRequest, UserDetailsImpl userDetails) {
+
+        // 1️⃣ 기존 레시피 조회
+        Recipe recipe = recipeRepository.findById(recipeRequest.getRecipeId())
+                .orElseThrow(() -> new IllegalArgumentException("레시피 없음"));
+
+        // 2️⃣ 권한 체크
+        if (!recipe.getUser().getEmail().equals(userDetails.getUser().getEmail())) {
+            throw new IllegalArgumentException("수정 권한 없음");
+        }
+
+        // 3️⃣ 기본 정보 수정
+        recipe.update(
+                recipeRequest.getTitle(),
+                recipeRequest.getRecipeType(),
+                recipeRequest.getCategory(),
+                recipeRequest.getCookingMethod(),
+                recipeRequest.getTechnique(),
+                recipeRequest.getDietaryGoal(),
+                recipeRequest.getDietaryRestriction(),
+                recipeRequest.getPrimaryIngredient(),
+                recipeRequest.getOccasion(),
+                recipeRequest.getDifficulty(),
+                recipeRequest.getCookingTime(),
+                recipeRequest.getCuisineRegion(),
+                recipeRequest.getServings(),
+                recipeRequest.getRequiredTool(),
+                recipeRequest.getSource(),
+                recipeRequest.getWrittenLang(),
+                recipeRequest.getStayRegion(),
+                recipeRequest.getIsUseLocalData()
+        );
+
+        // 4️⃣ 기존 재료 삭제
+        recipeIngredientRepository.deleteByRecipe(recipe);
+
+        // 5️⃣ 재료 재등록
+        List<RecipeIngredient> ingredients = new ArrayList<>();
+        for (IngredientsDTO ingredient : recipeRequest.getIngredients()) {
+            ingredients.add(
+                    RecipeIngredient.builder()
+                            .masterId(ingredient.getMasterId())
+                            .unit(ingredient.getUnit())
+                            .quantity(ingredient.getQuantity())
+                            .recipe(recipe)
+                            .build()
+            );
+        }
+        recipeIngredientRepository.saveAll(ingredients);
+
+        // 6️⃣ 기존 step 삭제
+        recipeStepRepository.deleteByRecipe(recipe);
+
+        // 7️⃣ step 재등록
+        List<RecipeStep> steps = new ArrayList<>();
+        for (StepsDTO step : recipeRequest.getSteps()) {
+            steps.add(
+                    RecipeStep.builder()
+                            .recipe(recipe)
+                            .way(step.getWay())
+                            .imageUrl(step.getImageUrl())
+                            .stepNumber(step.getStepNumber())
+                            .build()
+            );
+        }
+        recipeStepRepository.saveAll(steps);
+
+        return recipe.getRecipeId();
+    }
+
+
+
     // 진짜 레시피 삭제
     @Transactional
     public Long deleteRecipe(Long recipeId, UserDetailsImpl userDetails) {

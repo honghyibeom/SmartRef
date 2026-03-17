@@ -10,7 +10,6 @@ import com.hong.smartref.data.entity.*;
 import com.hong.smartref.data.enumerate.DefaultStorageColor;
 import com.hong.smartref.data.enumerate.DefaultStorageName;
 import com.hong.smartref.data.enumerate.StorageRole;
-import com.hong.smartref.data.enumerate.StorageType;
 import com.hong.smartref.exception.CustomException;
 import com.hong.smartref.exception.ErrorCode;
 import com.hong.smartref.repository.*;
@@ -21,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -45,7 +43,7 @@ public class StorageService {
         String color = Optional.ofNullable(storageRequest.getStorageColor())
                 .orElse(DefaultStorageColor.getRandomColor());
 
-        Storage storage = Storage.create(name, color, storageRequest.getStorageType());
+        Storage storage = Storage.create(name, color, storageRequest.getStorageTypeEnum());
         Storage result = storageRepository.save(storage);
 
         // storage User 매핑 저장
@@ -151,9 +149,9 @@ public class StorageService {
             StorageInfo storageInfo = StorageInfo.builder()
                     .storageColor(storage.getStorageColor())
                     .storageName(storage.getStorageName())
-                    .storageType(storage.getStorageType())
+                    .storageTypeEnum(storage.getStorageTypeEnum())
                     .storageId(storage.getStorageId())
-                    .locationIds(storage.getStorageType().getLocationIds())
+                    .locationIds(storage.getStorageTypeEnum().getLocationIds())
                     .build();
 
             storageInfoList.add(storageInfo);

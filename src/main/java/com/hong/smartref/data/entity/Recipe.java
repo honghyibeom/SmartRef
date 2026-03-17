@@ -114,5 +114,43 @@ public class Recipe {
     private List<RecipeSave> recipeSaveList;
 
     // ===== Factory =====
-
+    public void update(
+            String title,
+            RecipeType recipeType,
+            RecipeCategory category,
+            CookingMethod cookingMethod,
+            CookingTechnique technique,
+            DietaryGoal dietaryGoal,
+            DietaryRestriction dietaryRestriction,
+            PrimaryIngredient primaryIngredient,
+            Occasion occasion,
+            Difficulty difficulty,
+            CookingTime cookingTime,
+            CuisineRegion cuisineRegion,
+            Servings servings,
+            RequiredTool requiredTool,
+            RecipeSource source,
+            String writtenLang,
+            String stayRegion,
+            Boolean isUseLocalData
+    ) {
+        if (title != null) this.title = title;
+        if (recipeType != null) this.recipeType = recipeType;
+        if (category != null) this.category = category;
+        if (cookingMethod != null) this.cookingMethod = cookingMethod;
+        if (technique != null) this.technique = technique;
+        if (dietaryGoal != null) this.dietaryGoal = dietaryGoal;
+        if (dietaryRestriction != null) this.dietaryRestriction = dietaryRestriction;
+        if (primaryIngredient != null) this.primaryIngredient = primaryIngredient;
+        if (occasion != null) this.occasion = occasion;
+        if (difficulty != null) this.difficulty = difficulty;
+        if (cookingTime != null) this.cookingTime = cookingTime;
+        if (cuisineRegion != null) this.cuisineRegion = cuisineRegion;
+        if (servings != null) this.servings = servings;
+        if (requiredTool != null) this.requiredTool = requiredTool;
+        if (source != null) this.source = source;
+        if (writtenLang != null) this.writtenLang = writtenLang;
+        if (stayRegion != null) this.stayRegion = stayRegion;
+        if (isUseLocalData != null) this.isUseLocalData = isUseLocalData;
+    }
 }

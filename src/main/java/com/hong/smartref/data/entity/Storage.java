@@ -1,9 +1,6 @@
 package com.hong.smartref.data.entity;
 
-import com.hong.smartref.data.enumerate.DefaultColor;
-import com.hong.smartref.data.enumerate.DefaultStorageColor;
-import com.hong.smartref.data.enumerate.DefaultStorageName;
-import com.hong.smartref.data.enumerate.StorageType;
+import com.hong.smartref.data.enumerate.StorageTypeEnum;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -32,7 +29,8 @@ public class Storage {
     @Column(nullable = false)
     private String storageColor;
 
-    @Enumerated(EnumType.STRING)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "storage_type_id")
     private StorageType storageType;
 
     @Column(nullable = false, updatable = false)

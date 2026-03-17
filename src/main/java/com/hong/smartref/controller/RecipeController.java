@@ -28,6 +28,15 @@ public class RecipeController {
         );
     }
 
+    @Operation(summary = "레시피 수정 api", description = "레시피를 수정한다.")
+    @PatchMapping("/recipe/patch")
+    public ResponseEntity<ApiResponse<Long>> updateRecipe(@RequestBody RecipeRequest recipeRequests,
+                                                                 @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return ResponseEntity.ok(
+                ApiResponse.success("레시피 수정완료", recipeService.updateRecipe(recipeRequests, userDetails))
+        );
+    }
+
     @Operation(summary = "레시피 삭제 api", description = "레시피를 삭제한다.")
     @PostMapping("/recipe/delete")
     public ResponseEntity<ApiResponse<Long>> deleteRecipe(@RequestParam("recipeId") Long recipeId,

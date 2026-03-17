@@ -29,9 +29,9 @@ public class FoodController {
         );
     }
     @Operation(summary = "음식 수정 api", description = "음식 정보를 수정")
-    @PostMapping("/edit")
-    public ResponseEntity<ApiResponse<Long>> updateFood(
-            @RequestBody FoodRequest foodRequest) {
+    @PatchMapping("/edit")
+    public ResponseEntity<ApiResponse<FoodIdDTO>> updateFood(
+            @RequestBody List<FoodRequest> foodRequest) {
 
         return ResponseEntity.ok(
                 ApiResponse.success("식품 수정 완료", foodService.updateFood(foodRequest))

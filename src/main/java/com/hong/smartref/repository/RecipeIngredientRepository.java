@@ -12,4 +12,5 @@ import java.util.List;
 public interface RecipeIngredientRepository extends JpaRepository<RecipeIngredient, Long> {
     List<RecipeIngredient> findByMasterIdIn(List<Long> masterIds);
 
+    void deleteByRecipe(Recipe recipe);
 }

@@ -70,61 +70,65 @@ public class FoodService {
 
     //food 수정
     @Transactional
-    public Long updateFood(FoodRequest foodRequest) {
-        Food food = foodRepository.findById(foodRequest.getFoodId())
-                .orElseThrow(() -> new CustomException(ErrorCode.NOT_EXIST_FOOD));
+    public FoodIdDTO updateFood(List<FoodRequest> foodListRequest) {
 
-        if (foodRequest.getStorageId() != null) {
-            Storage storage = storageRepository.findById(foodRequest.getStorageId())
-                    .orElseThrow(() -> new CustomException(ErrorCode.NOT_EXIST_STORAGE));
-            food.setStorage(storage);
-        }
-        if (foodRequest.getLabel() != null) {
-            Label label = labelRepository.findByName(foodRequest.getLabel())
-                    .orElseThrow(() -> new CustomException(ErrorCode.NOT_EXIST_LABEL));
-            food.setLabel(label);
-        }
-        if(foodRequest.getMasterId() != null) {
-            food.setMasterId(foodRequest.getMasterId());
-        }
-        if (foodRequest.getName() != null) {
-            food.setName(foodRequest.getName());
-        }
-        if (foodRequest.getQuantity() != null) {
-            food.setQuantity(foodRequest.getQuantity());
-        }
-        if (foodRequest.getUnit() != null) {
-            food.setUnit(foodRequest.getUnit());
-        }
-        if (foodRequest.getExpiryDate() != null) {
-            food.setExpiredAt(foodRequest.getExpiryDate());
-        }
-        if (foodRequest.getLocationId() != null) {
-            Location location = locationRepository.findById(foodRequest.getLocationId())
-                    .orElseThrow(() -> new CustomException(ErrorCode.NOT_EXIST_LOCATION));
-            food.setLocation(location);
-        }
-        if (foodRequest.getAmountType() != null) {
-            food.setAmountType(foodRequest.getAmountType());
-        }
-        if (foodRequest.getMemo() != null) {
-            food.setMemo(foodRequest.getMemo());
-        }
-        // 이미지 변경 처리
-        if (!Objects.equals(food.getImageUrl(), foodRequest.getImageUrl())) {
+        List<Long> foodIds = new ArrayList<>();
 
-            if (food.getImageUrl() != null) {
-                s3ImageService.deleteFile(food.getImageUrl());
+        for (FoodRequest foodRequest : foodListRequest) {
+            Food food = foodRepository.findById(foodRequest.getFoodId())
+                    .orElseThrow(() -> new CustomException(ErrorCode.NOT_EXIST_FOOD));
+
+            Storage storage = null;
+            if (foodRequest.getStorageId() != null) {
+                storage = storageRepository.findById(foodRequest.getStorageId())
+                        .orElseThrow(() -> new CustomException(ErrorCode.NOT_EXIST_STORAGE));
             }
 
-            food.setImageUrl(foodRequest.getImageUrl());
+            Label label = null;
+            if (foodRequest.getLabel() != null) {
+                label = labelRepository.findByName(foodRequest.getLabel())
+                        .orElseThrow(() -> new CustomException(ErrorCode.NOT_EXIST_LABEL));
+            }
+
+            Location location = null;
+            if (foodRequest.getLocationId() != null) {
+                location = locationRepository.findById(foodRequest.getLocationId())
+                        .orElseThrow(() -> new CustomException(ErrorCode.NOT_EXIST_LOCATION));
+            }
+
+            // 🔥 이미지 변경 감지 (서비스에서 처리하는게 맞다)
+            if (!Objects.equals(food.getImageUrl(), foodRequest.getImageUrl())) {
+
+                if (food.getImageUrl() != null) {
+                    s3ImageService.deleteFile(food.getImageUrl());
+                }
+            }
+
+            // 🔥 엔티티에 위임
+            food.update(
+                    storage,
+                    label,
+                    foodRequest.getMasterId(),
+                    foodRequest.getName(),
+                    foodRequest.getQuantity(),
+                    foodRequest.getUnit(),
+                    foodRequest.getExpiryDate(),
+                    location,
+                    foodRequest.getAmountType(),
+                    foodRequest.getMemo(),
+                    foodRequest.getImageUrl()
+            );
+            foodIds.add(food.getFoodId());
         }
 
-        foodRepository.save(food);
 
-        return food.getFoodId();
+
+        return FoodIdDTO.builder()
+                .foodId(foodIds)
+                .build();
     }
 
+    @Transactional
     public Long deleteFood(Long foodId) {
         Food food = foodRepository.findById(foodId)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_EXIST_FOOD));

@@ -27,5 +27,7 @@ public class Location {
     @OneToMany(mappedBy = "location", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Food> foodList = new ArrayList<>();
 
+    @OneToMany(mappedBy = "location", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<StorageLocation> storageLocationList = new ArrayList<>();
 
 }

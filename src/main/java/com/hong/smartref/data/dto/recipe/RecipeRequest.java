@@ -13,6 +13,7 @@ import java.util.List;
 @Setter
 public class RecipeRequest {
 
+    private Long recipeId;
     private String title;
     private RecipeType recipeType;
     private String writtenLang;

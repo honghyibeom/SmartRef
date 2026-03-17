@@ -9,7 +9,7 @@ import com.hong.smartref.data.entity.User;
 import com.hong.smartref.data.entity.UserDevice;
 import com.hong.smartref.data.enumerate.DefaultStorageColor;
 import com.hong.smartref.data.enumerate.DefaultStorageName;
-import com.hong.smartref.data.enumerate.StorageType;
+import com.hong.smartref.data.enumerate.StorageTypeEnum;
 import com.hong.smartref.exception.CustomException;
 import com.hong.smartref.exception.ErrorCode;
 import com.hong.smartref.repository.StorageRepository;
@@ -62,7 +62,7 @@ public class UserService {
         Storage storage = Storage.create(
                 DefaultStorageName.getRandomStorageName(),
                 DefaultStorageColor.getRandomColor(),
-                StorageType.FRIDGE
+                StorageTypeEnum.FRIDGE
         );
         storageRepository.save(storage);
 

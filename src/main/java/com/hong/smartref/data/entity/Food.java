@@ -91,5 +91,31 @@ public class Food {
         return food;
     }
 
+    public void update(
+            Storage storage,
+            Label label,
+            Long masterId,
+            String name,
+            Double quantity,
+            String unit,
+            LocalDate expiryDate,
+            Location location,
+            AmountType amountType,
+            String memo,
+            String imageUrl
+    ) {
+        if (storage != null) this.storage = storage;
+        if (label != null) this.label = label;
+        if (masterId != null) this.masterId = masterId;
+        if (name != null) this.name = name;
+        if (quantity != null) this.quantity = quantity;
+        if (unit != null) this.unit = unit;
+        if (expiryDate != null) this.expiredAt = expiryDate;
+        if (location != null) this.location = location;
+        if (amountType != null) this.amountType = amountType;
+        if (memo != null) this.memo = memo;
+        if (imageUrl != null) this.imageUrl = imageUrl;
+    }
+
 }
 
