@@ -7,6 +7,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "storage_type")
 @Getter
@@ -20,4 +23,7 @@ public class StorageType {
 
     @Enumerated(EnumType.STRING)
     private StorageTypeEnum storageTypeEnum;
+
+    @OneToMany(mappedBy = "storageType", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<StorageLocation> storageLocationList = new ArrayList<>();
 }

@@ -3,19 +3,13 @@ package com.hong.smartref.service;
 import com.hong.smartref.config.jwt.JwtTokenUtil;
 import com.hong.smartref.config.security.UserDetailsImpl;
 import com.hong.smartref.data.dto.user.*;
-import com.hong.smartref.data.entity.Storage;
-import com.hong.smartref.data.entity.StorageUser;
-import com.hong.smartref.data.entity.User;
-import com.hong.smartref.data.entity.UserDevice;
+import com.hong.smartref.data.entity.*;
 import com.hong.smartref.data.enumerate.DefaultStorageColor;
 import com.hong.smartref.data.enumerate.DefaultStorageName;
 import com.hong.smartref.data.enumerate.StorageTypeEnum;
 import com.hong.smartref.exception.CustomException;
 import com.hong.smartref.exception.ErrorCode;
-import com.hong.smartref.repository.StorageRepository;
-import com.hong.smartref.repository.StorageUserRepository;
-import com.hong.smartref.repository.UserDeviceRepository;
-import com.hong.smartref.repository.UserRepository;
+import com.hong.smartref.repository.*;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -45,6 +39,7 @@ public class UserService {
     private final StorageRepository storageRepository;
     private final StorageUserRepository storageUserRepository;
     private final UserDeviceRepository userDeviceRepository;
+    private final StorageTypeRepository storageTypeRepository;
 
     @Transactional
     public void signup(SignupRequest signupRequest) {
@@ -59,12 +54,25 @@ public class UserService {
         User resultUser = userRepository.save(user);
 
         //디폴트 storage 생성
+        StorageType storageType = storageTypeRepository.findByStorageTypeId(1L)
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_EXIST_STORAGE_TYPE));
         Storage storage = Storage.create(
                 DefaultStorageName.getRandomStorageName(),
                 DefaultStorageColor.getRandomColor(),
-                StorageTypeEnum.FRIDGE
+                storageType
         );
         storageRepository.save(storage);
+
+        //쓰레기통 storage 생성
+        StorageType storageTrashType = storageTypeRepository.findByStorageTypeId(20L)
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_EXIST_STORAGE_TYPE));
+        Storage trashStorage = Storage.create(
+                DefaultStorageName.getRandomStorageName(),
+                DefaultStorageColor.getRandomColor(),
+                storageTrashType
+        );
+        storageRepository.save(trashStorage);
+
 
         // storage User 매핑 저장
         StorageUser storageUser = StorageUser.create(resultUser, storage);

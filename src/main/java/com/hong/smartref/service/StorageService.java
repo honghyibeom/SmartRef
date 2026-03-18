@@ -19,7 +19,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -29,12 +31,17 @@ public class StorageService {
     private final StorageUserRepository storageUserRepository;
     private final LocationRepository locationRepository;
     private final FoodRepository foodRepository;
+    private final StorageTypeRepository storageTypeRepository;
+    private final StorageLocationRepository storageLocationRepository;
 
     // storage 저장
     @Transactional
     public Long insertStorage(StorageRequest storageRequest, UserDetailsImpl userDetails) {
         User user = userRepository.findByEmail(userDetails.getEmail())
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_EXIST_USER));
+
+        StorageType storageType = storageTypeRepository.findByStorageTypeId(storageRequest.getStorageTypeId())
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_EXIST_STORAGE));
 
         // storage 저장
         String name = Optional.ofNullable(storageRequest.getStorageName())
@@ -43,7 +50,7 @@ public class StorageService {
         String color = Optional.ofNullable(storageRequest.getStorageColor())
                 .orElse(DefaultStorageColor.getRandomColor());
 
-        Storage storage = Storage.create(name, color, storageRequest.getStorageTypeEnum());
+        Storage storage = Storage.create(name, color, storageType);
         Storage result = storageRepository.save(storage);
 
         // storage User 매핑 저장
@@ -141,17 +148,41 @@ public class StorageService {
         if (storageUserList.isEmpty()) {
             throw new CustomException(ErrorCode.NOT_EXIST_STORAGE_USER);
         }
+
+        //유저가 가지고있는 모든 storageType을 조회한다.
+        List<StorageType> storageTypes = storageUserList.stream()
+                .map(su -> su.getStorage().getStorageType())
+                .distinct()
+                .toList();
+
+        // StorageLocation 을 전부 조회
+        List<StorageLocation> allLocations =
+                storageLocationRepository.findByStorageTypeIn(storageTypes);
+
+        //Map으로 묶는다.
+        Map<StorageType, List<Long>> locationMap =
+                allLocations.stream()
+                        .collect(Collectors.groupingBy(
+                                StorageLocation::getStorageType,
+                                Collectors.mapping(sl -> sl.getLocation().getLocationId(), Collectors.toList())
+                        ));
+
+
         List<StorageInfo> storageInfoList = new ArrayList<>();
 
         for (StorageUser storageUser : storageUserList) {
             Storage storage = storageUser.getStorage();
 
+            // storageType으로 묶는다
+            List<Long> locationIds =
+                    locationMap.getOrDefault(storage.getStorageType(), new ArrayList<>());
+
             StorageInfo storageInfo = StorageInfo.builder()
                     .storageColor(storage.getStorageColor())
                     .storageName(storage.getStorageName())
-                    .storageTypeEnum(storage.getStorageTypeEnum())
+                    .storageTypeEnum(storage.getStorageType().getStorageTypeEnum())
                     .storageId(storage.getStorageId())
-                    .locationIds(storage.getStorageTypeEnum().getLocationIds())
+                    .locationIds(locationIds)
                     .build();
 
             storageInfoList.add(storageInfo);

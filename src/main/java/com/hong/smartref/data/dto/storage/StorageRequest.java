@@ -14,5 +14,5 @@ public class StorageRequest {
     private Long storageId;
     private String storageName;
     private String storageColor;
-    private StorageTypeEnum storageTypeEnum;
+    private Long storageTypeId;
 }

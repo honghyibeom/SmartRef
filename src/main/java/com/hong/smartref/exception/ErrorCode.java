@@ -29,6 +29,7 @@ public enum ErrorCode {
     NOT_VALIDATE_REFRESH_TOKEN("유효한 리프레시 토큰이 아닙니다.", HttpStatus.BAD_REQUEST),
     EXIST_NICKNAME("같은 닉네임이 존재 합니다.", HttpStatus.BAD_REQUEST),
     NOT_EXIST_STORAGE("존재하지 않는 저장소",HttpStatus.BAD_REQUEST),
+    NOT_EXIST_STORAGE_TYPE("존재하지 않는 저장소타입",HttpStatus.BAD_REQUEST),
     NOT_EXIST_LABEL("존재하지 않는 라벨",HttpStatus.BAD_REQUEST),
     NOT_EXIST_NOTIFICATION("존재하지 않는 알림",HttpStatus.BAD_REQUEST),
     NOT_EXIST_FOOD_FAVORITE("좋아하는 음식이 없습니다.",HttpStatus.BAD_REQUEST),
