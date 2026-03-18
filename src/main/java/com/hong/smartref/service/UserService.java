@@ -78,6 +78,10 @@ public class UserService {
         StorageUser storageUser = StorageUser.create(resultUser, storage);
         storageUserRepository.save(storageUser);
 
+        // trash storage User 매핑 저장
+        StorageUser trashStorageUser = StorageUser.create(resultUser, trashStorage);
+        storageUserRepository.save(trashStorageUser);
+
     }
 
     public LoginResponse login(LoginRequest loginRequest) {
