@@ -161,7 +161,7 @@ public class UserService {
                 TimeUnit.MINUTES
         );
 
-        return code; // (보통은 반환 안 함, 테스트용이면 OK)
+        return "코드 전송"; // (보통은 반환 안 함, 테스트용이면 OK)
     }
 
     @Transactional

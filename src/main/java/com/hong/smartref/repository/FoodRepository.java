@@ -2,6 +2,7 @@ package com.hong.smartref.repository;
 
 import com.hong.smartref.data.dto.food.FoodInfo;
 import com.hong.smartref.data.entity.Food;
+import com.hong.smartref.data.entity.Storage;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -38,4 +39,6 @@ public interface FoodRepository extends JpaRepository<Food, Long> {
         WHERE su.user.email = :email
     """)
     List<FoodInfo> findFoodInfoByUserId(@Param("email") String email);
+
+    List<Food> findByStorage(Storage storage);
 }

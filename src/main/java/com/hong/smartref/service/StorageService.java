@@ -10,10 +10,12 @@ import com.hong.smartref.data.entity.*;
 import com.hong.smartref.data.enumerate.DefaultStorageColor;
 import com.hong.smartref.data.enumerate.DefaultStorageName;
 import com.hong.smartref.data.enumerate.StorageRole;
+import com.hong.smartref.data.enumerate.StorageTypeEnum;
 import com.hong.smartref.exception.CustomException;
 import com.hong.smartref.exception.ErrorCode;
 import com.hong.smartref.repository.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -96,8 +98,22 @@ public class StorageService {
         Storage storage = storageRepository.findById(storageId)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_EXIST_STORAGE));
 
+        Storage trash = storageRepository
+                .findByStorageUserList_User_EmailAndStorageType_StorageTypeEnum(
+                        user.getEmail(),
+                        StorageTypeEnum.TRASH
+                ).orElseThrow(() -> new CustomException(ErrorCode.NOT_EXIST_STORAGE));
+
+        Location trashLocation = locationRepository
+                .findTrashLocation(StorageTypeEnum.TRASH.name())
+                .stream()
+                .findFirst()
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_EXIST_LOCATION));
+
+
         StorageUser storageUser = storageUserRepository.findByUserAndStorage(user, storage)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_EXIST_STORAGE_USER));
+
 
         int memberCount = storageUserRepository.countByStorage(storage);
 
@@ -105,6 +121,13 @@ public class StorageService {
         if (memberCount == 1) {
             if (storageUser.getRole() != StorageRole.OWNER) {
                 throw new CustomException(ErrorCode.NO_AUTHORITY);
+            }
+            // food를 쓰레기 storage에 옮긴다.
+            List<Food> food = foodRepository.findByStorage(storage);
+            for (Food foodItem : food) {
+                foodItem.setStorage(trash);
+                foodItem.setLocation(trashLocation);
+                foodRepository.save(foodItem);
             }
             storageRepository.delete(storage);
             return storageId;

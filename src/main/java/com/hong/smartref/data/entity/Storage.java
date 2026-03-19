@@ -36,7 +36,7 @@ public class Storage {
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    @OneToMany(mappedBy = "storage", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "storage")
     private List<Food> foodList = new ArrayList<>();
 
     @OneToMany(mappedBy = "storage", cascade = CascadeType.ALL, orphanRemoval = true)
