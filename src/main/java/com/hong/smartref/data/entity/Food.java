@@ -39,9 +39,9 @@ public class Food {
     @Column(nullable = false)
     private AmountType amountType;
 
-    private Double quantity;
+    private Double quantity; // 정해진 량
 
-    private String unit;
+    private String unit; // 있다면 amountType이 Method다.
 
     private LocalDate expiredAt;
 
