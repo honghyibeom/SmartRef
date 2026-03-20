@@ -6,36 +6,28 @@ import lombok.*;
 import java.util.List;
 
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Setter
-public class RecipeInfo {
+public class RecipeSearchRequest {
+    private List<IngredientsDTO> ingredients;
 
-    private String title;
     private RecipeType recipeType;
-    private String writtenLang;
-    private RecipeCategory category;
     private CookingMethod cookingMethod;
-    private CookingTechnique technique;
+    private CookingTechnique cookingTechnique;
     private DietaryGoal dietaryGoal;
     private DietaryRestriction dietaryRestriction;
     private PrimaryIngredient primaryIngredient;
+    private RecipeCategory recipeCategory;
     private Occasion occasion;
     private Difficulty difficulty;
     private CookingTime cookingTime;
-    private CuisineRegion cuisineRegion;
     private Servings servings;
     private RequiredTool requiredTool;
+    private CuisineRegion cuisineRegion;
+    private RecipeSource recipeSource;
+    private RecipeVisibility recipeVisibility;
 
-    private List<IngredientsDTO> ingredients;
-    private List<StepsDTO> steps;
-
-    private RecipeSource source;   // AI / USER
-    private RecipeVisibility visibility;
-    private Boolean isUseLocalData;
-    private String stayRegion;
-    private Integer likeCount;
-    private Integer viewCount;
+    private String searchValue;
 }
-

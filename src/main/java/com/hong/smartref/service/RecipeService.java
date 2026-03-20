@@ -6,11 +6,14 @@ import com.hong.smartref.config.security.UserDetailsImpl;
 import com.hong.smartref.data.dto.ApiResponse;
 import com.hong.smartref.data.dto.recipe.*;
 import com.hong.smartref.data.entity.*;
-import com.hong.smartref.data.enumerate.RecipeVisibility;
+import com.hong.smartref.data.enumerate.*;
 import com.hong.smartref.exception.CustomException;
 import com.hong.smartref.exception.ErrorCode;
 import com.hong.smartref.repository.*;
+import com.hong.smartref.util.EnumConverter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -237,6 +240,9 @@ public class RecipeService {
                 .build();
 
         recipeLikeRepository.save(recipeLike);
+
+        recipe.setLikeCount(recipe.getLikeCount() + 1);
+        recipeRepository.save(recipe);
         return recipeLike.getLikeId();
     }
 
@@ -249,6 +255,10 @@ public class RecipeService {
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_EXIST_RECIPE_LIKE));
 
         recipeLikeRepository.delete(recipeLike);
+
+        recipe.setLikeCount(recipe.getLikeCount() - 1);
+        recipeRepository.save(recipe);
+
         return recipeLike.getLikeId();
     }
 
@@ -287,9 +297,44 @@ public class RecipeService {
         }
     }
 
-    public List<RecipeInfo> recipeSearch(MasterIdDTO masterId) {
+    public RecipeSearchResponse recipeSearch(int page, RecipeSearchRequest dto) {
 
-        List<Recipe> recipes = recipeRepository.findRecipesByMasterIds(masterId.getMasterId());
+        PageRequest pageRequest = PageRequest.of(page, 5);
+
+        List<Long> masterIds = null;
+
+        if (dto.getIngredients() != null && !dto.getIngredients().isEmpty()) {
+            masterIds = dto.getIngredients().stream()
+                    .map(IngredientsDTO::getMasterId)
+                    .toList();
+        }
+
+        String searchValue = dto.getSearchValue();
+
+        if (searchValue == null || searchValue.isBlank()) {
+            searchValue = "";
+        }
+        //레시피를 검색한다.
+        Page<Recipe> recipes = recipeRepository.searchRecipes(
+                masterIds,
+                dto.getRecipeType(),
+                dto.getCookingMethod(),
+                dto.getCookingTechnique(),
+                dto.getDietaryGoal(),
+                dto.getDietaryRestriction(),
+                dto.getPrimaryIngredient(),
+                dto.getRecipeCategory(),
+                dto.getOccasion(),
+                dto.getDifficulty(),
+                dto.getCookingTime(),
+                dto.getServings(),
+                dto.getRequiredTool(),
+                dto.getCuisineRegion(),
+                dto.getRecipeSource(),
+                dto.getRecipeVisibility(),
+                searchValue,
+                pageRequest
+        );
         if (recipes.isEmpty()) {
             throw new CustomException(ErrorCode.NOT_EXIST_RECIPE);
         }
@@ -339,11 +384,18 @@ public class RecipeService {
                     .visibility(recipe.getVisibility())
                     .isUseLocalData(recipe.isUseLocalData())
                     .stayRegion(recipe.getStayRegion())
+                    .likeCount(recipe.getLikeCount())
+                    .viewCount(recipe.getViewCount())
                     .build();
 
             recipeInfoList.add(recipeInfo);
         }
 
-        return recipeInfoList;
+        return RecipeSearchResponse.builder()
+                .recipes(recipeInfoList)
+                .isAfter(recipes.hasNext())
+                .isPrev(recipes.hasPrevious())
+                .pageNumber(recipes.getNumber())
+                .build();
     }
 }

@@ -9,5 +9,5 @@ import java.util.List;
 @Setter
 public class LocationMoveRequest {
     private Long nextLocationId;
-    private List<Long> foodIdList;
+    private List<FoodMoveRequest> foodIdList;
 }

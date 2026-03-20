@@ -10,6 +10,7 @@ import java.util.List;
 @Entity
 @Table(name = "recipe")
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder

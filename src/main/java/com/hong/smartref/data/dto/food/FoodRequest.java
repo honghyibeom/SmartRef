@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import software.amazon.awssdk.services.s3.endpoints.internal.Value;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -19,7 +20,7 @@ public class FoodRequest {
     private Long storageId;
     private String label;
     private String name;
-    private Double quantity;
+    private BigDecimal quantity;
     private String unit;
     private LocalDate expiryDate;
     private Long locationId;

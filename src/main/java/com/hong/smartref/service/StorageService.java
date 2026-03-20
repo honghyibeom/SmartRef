@@ -1,11 +1,10 @@
 package com.hong.smartref.service;
 
 import com.hong.smartref.config.security.UserDetailsImpl;
+import com.hong.smartref.data.dto.food.FoodIdDTO;
+import com.hong.smartref.data.dto.food.FoodRequest;
 import com.hong.smartref.data.dto.location.LocationInfo;
-import com.hong.smartref.data.dto.storage.LocationMoveRequest;
-import com.hong.smartref.data.dto.storage.StorageInfo;
-import com.hong.smartref.data.dto.storage.StorageMoveRequest;
-import com.hong.smartref.data.dto.storage.StorageRequest;
+import com.hong.smartref.data.dto.storage.*;
 import com.hong.smartref.data.entity.*;
 import com.hong.smartref.data.enumerate.DefaultStorageColor;
 import com.hong.smartref.data.enumerate.DefaultStorageName;
@@ -19,10 +18,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.math.BigDecimal;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -217,21 +214,81 @@ public class StorageService {
 
     @Transactional
     public void foodStorageMigration(StorageMoveRequest storageMoveRequest) {
+        // 1. 옮길 storageId에 옮길 locationId에 기존 foodId와 이동한 갯수 quantity 를 리스트로 전달 할거임
+        // 2. 이때 기존 foodId는 quantity 를 (기존 - 이동한 갯수) 를 해서 quantity 수정 후 저장
+        // 3. 옮길 storageId에 있는 타입에 locationId가 옮길 locationId와 일치한지 검증 필요
+        // 4. food를 옮길 stroageId와 location에 새로 생성한다.
 
-        Storage nextStorage = storageRepository.findById(storageMoveRequest.getNextStorageId())
-                .orElseThrow(() -> new CustomException(ErrorCode.NOT_EXIST_STORAGE));
+        Storage nextStorage = storageRepository.findById(storageMoveRequest.getNextStorageId()).
+                orElseThrow(() -> new CustomException(ErrorCode.NOT_EXIST_STORAGE));
 
-        for (LocationMoveRequest locationMoveRequest : storageMoveRequest.getList()) {
-
-            Location nextLocation = locationRepository.findById(locationMoveRequest.getNextLocationId())
+        for (LocationMoveRequest storageMoveRequestItem : storageMoveRequest.getList()) {
+            Location nextLocation = locationRepository.findById(storageMoveRequestItem.getNextLocationId())
                     .orElseThrow(() -> new CustomException(ErrorCode.NOT_EXIST_LOCATION));
 
-            List<Food> foods = foodRepository.findAllById(locationMoveRequest.getFoodIdList());
+            validateLocation(nextStorage, nextLocation);
 
-            for (Food food : foods) {
-                food.setStorage(nextStorage);
-                food.setLocation(nextLocation);
+            for (FoodMoveRequest foodMoveRequestItem : storageMoveRequestItem.getFoodIdList()) {
+
+                // 기존 food quantity 수정
+                Food oriFood = foodRepository.findById(foodMoveRequestItem.getFoodId())
+                        .orElseThrow(() -> new CustomException(ErrorCode.NOT_EXIST_FOOD));
+
+
+                BigDecimal moveQty = foodMoveRequestItem.getQuantity();
+
+                // 검증
+                if (oriFood.getQuantity().compareTo(moveQty) < 0) {
+                    throw new CustomException(ErrorCode.INVALID_QUANTITY);
+                }
+
+                // 기존 차감
+                BigDecimal newQty = oriFood.getQuantity().subtract(moveQty);
+
+                if (newQty.compareTo(BigDecimal.ZERO) <= 0) {
+                    foodRepository.delete(oriFood);
+                }
+                else {
+                    oriFood.update(
+                            oriFood.getStorage(),
+                            oriFood.getLabel(),
+                            oriFood.getMasterId(),
+                            oriFood.getName(),
+                            newQty,
+                            oriFood.getUnit(),
+                            oriFood.getExpiredAt(),
+                            oriFood.getLocation(),
+                            oriFood.getAmountType(),
+                            oriFood.getMemo(),
+                            oriFood.getImageUrl()
+                    );
+                    foodRepository.save(oriFood);
+                }
+
+                // 새 food 등록(옮기는 작업)
+                Food divideFood = Food.create(
+                        nextStorage,
+                        oriFood.getLabel(),
+                        oriFood.getName(),
+                        oriFood.getAmountType(),
+                        moveQty,
+                        oriFood.getUnit(),
+                        oriFood.getExpiredAt(),
+                        nextLocation,
+                        oriFood.getImageUrl(),
+                        null,
+                        oriFood.getMasterId()
+                );
+                foodRepository.save(divideFood);
             }
+        }
+    }
+    private void validateLocation(Storage storage, Location location) {
+        boolean valid = storageLocationRepository
+                .existsByStorageTypeAndLocation(storage.getStorageType(), location);
+
+        if (!valid) {
+            throw new CustomException(ErrorCode.NOT_EXIST_STORAGE_LOCATION);
         }
     }
 

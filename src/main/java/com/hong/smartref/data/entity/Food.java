@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -39,7 +40,7 @@ public class Food {
     @Column(nullable = false)
     private AmountType amountType;
 
-    private Double quantity; // 정해진 량
+    private BigDecimal quantity; // 정해진 량
 
     private String unit; // 있다면 amountType이 Method다.
 
@@ -67,7 +68,7 @@ public class Food {
             Label label,
             String name,
             AmountType amountType,
-            Double quantity,
+            BigDecimal quantity,
             String unit,
             LocalDate expiredAt,
             Location location,
@@ -96,7 +97,7 @@ public class Food {
             Label label,
             Long masterId,
             String name,
-            Double quantity,
+            BigDecimal quantity,
             String unit,
             LocalDate expiryDate,
             Location location,

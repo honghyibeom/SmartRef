@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
 import java.util.List;
 
 @Repository
@@ -41,4 +42,6 @@ public interface FoodRepository extends JpaRepository<Food, Long> {
     List<FoodInfo> findFoodInfoByUserId(@Param("email") String email);
 
     List<Food> findByStorage(Storage storage);
+
+    List<Food> findByFoodIdIn(Collection<Long> foodIds);
 }

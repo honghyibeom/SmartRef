@@ -1,5 +1,6 @@
 package com.hong.smartref.repository;
 
+import com.hong.smartref.data.entity.Location;
 import com.hong.smartref.data.entity.StorageLocation;
 import com.hong.smartref.data.entity.StorageType;
 import org.springframework.data.repository.CrudRepository;
@@ -13,4 +14,6 @@ public interface StorageLocationRepository extends CrudRepository<StorageLocatio
     List<StorageLocation> findByStorageType(StorageType storageType);
 
     List<StorageLocation> findByStorageTypeIn(Collection<StorageType> storageTypes);
+
+    boolean existsByStorageTypeAndLocation(StorageType storageType, Location location);
 }

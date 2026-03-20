@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Getter
@@ -16,7 +17,7 @@ public class FoodInfo {
     private Long storageId;
     private String label;
     private String name;
-    private Double quantity;
+    private BigDecimal quantity;
     private String unit;
     private LocalDate expiryDate;
     private Long locationId;
@@ -31,7 +32,7 @@ public class FoodInfo {
             Long storageId,
             String label,
             String name,
-            Double quantity,
+            BigDecimal quantity,
             String unit,
             LocalDate expiryDate,
             Long locationId,

@@ -97,10 +97,11 @@ public class RecipeController {
     }
 
     @Operation(summary = "레시피 검색 api", description = "레시피 검색 api")
-    @PostMapping("/recipe/search")
-    public ResponseEntity<ApiResponse<List<RecipeInfo>>> RecipeSearch(@RequestBody MasterIdDTO masterId) {
+    @PostMapping("/recipe/search/{page}")
+    public ResponseEntity<ApiResponse<RecipeSearchResponse>> RecipeSearch(@PathVariable("page") int page,
+                                                                      @RequestBody RecipeSearchRequest recipeSearchRequest) {
         return ResponseEntity.ok(
-                ApiResponse.success("레시피 검색 결과", recipeService.recipeSearch(masterId))
+                ApiResponse.success("레시피 검색 결과", recipeService.recipeSearch(page, recipeSearchRequest))
         );
     }
 }
