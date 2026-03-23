@@ -1,28 +1,22 @@
 package com.hong.smartref.service;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hong.smartref.config.security.UserDetailsImpl;
-import com.hong.smartref.data.dto.ApiResponse;
 import com.hong.smartref.data.dto.recipe.*;
 import com.hong.smartref.data.entity.*;
 import com.hong.smartref.data.enumerate.*;
 import com.hong.smartref.exception.CustomException;
 import com.hong.smartref.exception.ErrorCode;
 import com.hong.smartref.repository.*;
-import com.hong.smartref.util.EnumConverter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestClient;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor

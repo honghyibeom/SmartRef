@@ -1,6 +1,7 @@
 package com.hong.smartref.data.dto.food;
 
 import com.hong.smartref.data.enumerate.AmountType;
+import com.hong.smartref.data.enumerate.UpdateImageType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -29,4 +30,5 @@ public class FoodRequest {
     private AmountType amountType;
     private Long masterId;
     private Boolean isFavorite;
+    private UpdateImageType updateType;
 }

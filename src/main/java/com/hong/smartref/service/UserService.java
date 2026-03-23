@@ -153,7 +153,7 @@ public class UserService {
         String code = mailService.sendMail(user.getEmail(), "cert");
 
         // 2️⃣ Redis 저장 (5분)
-        String redisKey = "email:cert:" + user.getEmail();
+        String redisKey = "cert:email:" + user.getEmail();
         redisTemplate.opsForValue().set(
                 redisKey,
                 code,
@@ -169,7 +169,7 @@ public class UserService {
         User user = userRepository.findByEmail(mailCheckRequest.getEmail())
                 .orElseThrow(()-> new CustomException(ErrorCode.NOT_EXIST_USER));
 
-        String redisKey = "email:cert:" + user.getEmail();
+        String redisKey = "cert:email:" + user.getEmail();
 
         // 1️⃣ Redis에서 코드 조회
         String savedCode = redisTemplate.opsForValue().get(redisKey);
@@ -221,7 +221,7 @@ public class UserService {
         String code = mailService.sendMail(email.getEmail(),"password");
 
         // 2️⃣ Redis 저장 (5분)
-        String redisKey = "email:password:" + email.getEmail();
+        String redisKey = "password:email:" + email.getEmail();
         redisTemplate.opsForValue().set(
                 redisKey,
                 code,
@@ -234,7 +234,7 @@ public class UserService {
         User user = userRepository.findByEmail(mailCheckRequest.getEmail())
                 .orElseThrow(()-> new CustomException(ErrorCode.NOT_EXIST_USER));
 
-        String redisKey = "email:password:" + user.getEmail();
+        String redisKey = "password:email:" + user.getEmail();
 
         // 1️⃣ Redis에서 코드 조회
         String savedCode = redisTemplate.opsForValue().get(redisKey);

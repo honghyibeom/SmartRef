@@ -96,12 +96,37 @@ public class FoodService {
                         .orElseThrow(() -> new CustomException(ErrorCode.NOT_EXIST_LOCATION));
             }
 
-            // 🔥 이미지 변경 감지 (서비스에서 처리하는게 맞다)
-            if (!Objects.equals(food.getImageUrl(), foodRequest.getImageUrl())) {
+            String currentImage = food.getImageUrl();
+            String requestImage = foodRequest.getImageUrl();
 
-                if (food.getImageUrl() != null) {
-                    s3ImageService.deleteFile(food.getImageUrl());
-                }
+            switch (foodRequest.getUpdateType()) {
+
+                case KEEP:
+                    // 기존 이미지 유지
+                    requestImage = currentImage;
+                    break;
+
+                case UPDATE:
+                    if (requestImage == null) {
+                        throw new CustomException(ErrorCode.INVALID_IMAGE_REQUEST);
+                    }
+
+                    if (!Objects.equals(currentImage, requestImage)) {
+                        if (currentImage != null) {
+                            s3ImageService.deleteFile(currentImage);
+                        }
+                    }
+                    break;
+
+                case DELETE:
+                    if (currentImage != null) {
+                        s3ImageService.deleteFile(currentImage);
+                    }
+                    requestImage = null;
+                    break;
+
+                default:
+                    throw new CustomException(ErrorCode.INVALID_IMAGE_REQUEST);
             }
 
             // 🔥 엔티티에 위임
@@ -116,7 +141,7 @@ public class FoodService {
                     location,
                     foodRequest.getAmountType(),
                     foodRequest.getMemo(),
-                    foodRequest.getImageUrl()
+                    requestImage
             );
             foodIds.add(food.getFoodId());
         }

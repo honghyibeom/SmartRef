@@ -57,6 +57,7 @@ public enum ErrorCode {
     BUCKET_FULL("버킷 100GB 초과 관리자 문의", HttpStatus.BAD_REQUEST),
     EXPIRED_CERT_CODE("이메일 인증코드 시간 초과", HttpStatus.BAD_REQUEST),
     NO_AUTHORITY("주인이 아닙니다.", HttpStatus.BAD_REQUEST),
+    INVALID_IMAGE_REQUEST("잘못된 이미지 요청.", HttpStatus.BAD_REQUEST),
     INVALID_CERT_CODE("이메일 인증코드 불일치", HttpStatus.BAD_REQUEST);
 
 
