@@ -39,7 +39,9 @@ public class User {
     @Column(nullable = false)
     private boolean isValid;
 
-    private String locationName;
+    private String stayRegion;
+
+    private Boolean isUseLocalData;
 
     @Setter
     @Column(nullable = false)
@@ -60,6 +62,9 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserDevice> userDeviceList  = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<TicketLog> ticketLogList  = new ArrayList<>();
+
     @OneToMany(
             mappedBy = "user",
             cascade = CascadeType.ALL,
@@ -76,7 +81,7 @@ public class User {
         user.password = encodedPassword;
         user.nickname = DefaultUserName.getRandomUserName();
         user.nicknameColor = DefaultColor.getRandomColor();
-        user.locationName = null;
+        user.stayRegion = null;
         user.role = Role.USER;
 
         // 기본 정책

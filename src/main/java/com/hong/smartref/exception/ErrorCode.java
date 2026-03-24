@@ -58,6 +58,9 @@ public enum ErrorCode {
     EXPIRED_CERT_CODE("이메일 인증코드 시간 초과", HttpStatus.BAD_REQUEST),
     NO_AUTHORITY("주인이 아닙니다.", HttpStatus.BAD_REQUEST),
     INVALID_IMAGE_REQUEST("잘못된 이미지 요청.", HttpStatus.BAD_REQUEST),
+    TO_MANY_TICKET("티켓은 최대 3개까지 발급 가능합니다.", HttpStatus.BAD_REQUEST),
+    INVALID_STATUS("티켓 상태가 이상합니다.", HttpStatus.BAD_REQUEST),
+    NOT_VALIDATE_TICKET("티켓 검증 실패", HttpStatus.FORBIDDEN),
     INVALID_CERT_CODE("이메일 인증코드 불일치", HttpStatus.BAD_REQUEST);
 
 
