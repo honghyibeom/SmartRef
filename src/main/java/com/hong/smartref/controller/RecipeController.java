@@ -98,10 +98,19 @@ public class RecipeController {
 
     @Operation(summary = "레시피 검색 api", description = "레시피 검색 api")
     @PostMapping("/recipe/search/{page}")
-    public ResponseEntity<ApiResponse<RecipeSearchResponse>> RecipeSearch(@PathVariable("page") int page,
-                                                                      @RequestBody RecipeSearchRequest recipeSearchRequest) {
+    public ResponseEntity<ApiResponse<RecipePageResponse>> RecipeSearch(@PathVariable("page") int page,
+                                                                        @RequestBody RecipeSearchRequest recipeSearchRequest) {
         return ResponseEntity.ok(
                 ApiResponse.success("레시피 검색 결과", recipeService.recipeSearch(page, recipeSearchRequest))
+        );
+    }
+
+    @Operation(summary = "유저가 저장한 레시피 조회 api", description = "유저가 저장한 레시피 조회 api")
+    @PostMapping("/recipe/get/user/{page}")
+    public ResponseEntity<ApiResponse<RecipePageResponse>> saveUserRecipe(@PathVariable("page") int page,
+                                                                        @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return ResponseEntity.ok(
+                ApiResponse.success("저장한 레시피 조회 결과", recipeService.getUserSaveRecipe(page, userDetails))
         );
     }
 }

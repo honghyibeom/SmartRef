@@ -62,7 +62,8 @@ INSERT INTO location (location_id, location_name, location_color) VALUES
                                                                       (27, 'center_top_right', '#F2A0C0'),
                                                                       (28, 'center_bottom_right', '#F2A0AE'),
                                                                       (29, 'center_top_left', '#F2C2B8'),
-                                                                      (30, 'trash', '#F2D4C2') ON CONFLICT (location_id) DO NOTHING;
+                                                                      (30, 'center_bottom_left', '#F2D4C2'),
+                                                                      (31, 'trash', NULL) ON CONFLICT (location_id) DO NOTHING;
 
 INSERT INTO storage_type (storage_type_id, storage_type_enum) VALUES
                                                             (1, 'FRIDGE'),
@@ -200,5 +201,5 @@ INSERT INTO storage_location (storage_type_id, location_id) VALUES
 (19, 8),
 
 --20
-(20, 30) ON CONFLICT (storage_type_id, location_id) DO NOTHING;
+(20, 31) ON CONFLICT (storage_type_id, location_id) DO NOTHING;
 

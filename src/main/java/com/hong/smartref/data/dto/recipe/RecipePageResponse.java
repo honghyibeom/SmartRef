@@ -9,7 +9,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class RecipeSearchResponse {
+public class RecipePageResponse {
     private Boolean isPrev;
     private Boolean isAfter;
     private int pageNumber;

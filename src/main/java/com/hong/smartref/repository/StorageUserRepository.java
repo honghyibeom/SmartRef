@@ -19,9 +19,6 @@ public interface StorageUserRepository extends JpaRepository<StorageUser, Long> 
 
     Optional<StorageUser> findTopByStorageOrderByJoinedAtAsc(Storage storage);
 
-
-    List<StorageUser> findByUser(User user);
-
     @Query("""
             select su from StorageUser su
             join fetch su.storage s
@@ -29,6 +26,4 @@ public interface StorageUserRepository extends JpaRepository<StorageUser, Long> 
             where su.user = :user
             """)
     List<StorageUser> findByUserWithStorage(User user);
-
-    Optional<StorageUser> findByUserAndStorage_StorageType(User user, StorageType storageStorageType);
 }

@@ -293,7 +293,7 @@ public class RecipeService {
         }
     }
 
-    public RecipeSearchResponse recipeSearch(int page, RecipeSearchRequest dto) {
+    public RecipePageResponse recipeSearch(int page, RecipeSearchRequest dto) {
 
         PageRequest pageRequest = PageRequest.of(page, 5);
 
@@ -331,23 +331,47 @@ public class RecipeService {
                 pageRequest
         );
 
-        if (recipes.isEmpty()) {
-            throw new CustomException(ErrorCode.NOT_EXIST_RECIPE);
-        }
-        // 2️⃣ recipeId 추출
+        List<RecipeInfo> recipeInfoList = buildRecipeInfoList(recipes);
+
+        return RecipePageResponse.builder()
+                .recipes(recipeInfoList)
+                .isAfter(recipes.hasNext())
+                .isPrev(recipes.hasPrevious())
+                .pageNumber(recipes.getNumber())
+                .build();
+    }
+
+    public RecipePageResponse getUserSaveRecipe(int page, UserDetailsImpl userDetails) {
+        PageRequest pageRequest = PageRequest.of(page, 5);
+
+        Page<Recipe> recipes = recipeRepository.findByRecipeSaveUser(userDetails.getUser(), pageRequest);
+
+        List<RecipeInfo> recipeInfoList = buildRecipeInfoList(recipes);
+
+        return RecipePageResponse.builder()
+                .recipes(recipeInfoList)
+                .isAfter(recipes.hasNext())
+                .isPrev(recipes.hasPrevious())
+                .pageNumber(recipes.getNumber())
+                .build();
+    }
+
+    private List<RecipeInfo> buildRecipeInfoList(Page<Recipe> recipes) {
+
+        // 1️⃣ recipeId 추출
         List<Long> recipeIds = recipes.stream()
                 .map(Recipe::getRecipeId)
                 .toList();
 
-        // 3️⃣ ingredients 한방 조회
+        // 2️⃣ ingredients 조회
         List<RecipeIngredient> ingredientList =
                 recipeIngredientRepository.findByRecipeIds(recipeIds);
 
-        // 4️⃣ steps 한방 조회
+        // 3️⃣ steps 조회
         List<RecipeStep> stepList =
                 recipeStepRepository.findByRecipeIds(recipeIds);
 
-        // 5️⃣ Map 구성 (🔥 핵심)
+        // 4️⃣ Map 구성
         Map<Long, List<RecipeIngredient>> ingredientMap =
                 ingredientList.stream()
                         .collect(Collectors.groupingBy(
@@ -360,9 +384,8 @@ public class RecipeService {
                                 rs -> rs.getRecipe().getRecipeId()
                         ));
 
-        List<RecipeInfo> recipeInfoList = new ArrayList<>();
-
-        for (Recipe recipe : recipes) {
+        // 5️⃣ DTO 변환
+        return recipes.stream().map(recipe -> {
 
             List<IngredientsDTO> ingredients =
                     ingredientMap.getOrDefault(recipe.getRecipeId(), List.of())
@@ -384,7 +407,7 @@ public class RecipeService {
                                     .build())
                             .toList();
 
-            RecipeInfo recipeInfo = RecipeInfo.builder()
+            return RecipeInfo.builder()
                     .title(recipe.getTitle())
                     .recipeType(recipe.getRecipeType())
                     .writtenLang(recipe.getWrittenLang())
@@ -409,15 +432,7 @@ public class RecipeService {
                     .likeCount(recipe.getLikeCount())
                     .viewCount(recipe.getViewCount())
                     .build();
-
-            recipeInfoList.add(recipeInfo);
-        }
-
-        return RecipeSearchResponse.builder()
-                .recipes(recipeInfoList)
-                .isAfter(recipes.hasNext())
-                .isPrev(recipes.hasPrevious())
-                .pageNumber(recipes.getNumber())
-                .build();
+        }).toList();
     }
+
 }

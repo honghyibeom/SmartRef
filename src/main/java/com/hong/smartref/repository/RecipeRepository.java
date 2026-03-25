@@ -1,6 +1,8 @@
 package com.hong.smartref.repository;
 
 import com.hong.smartref.data.entity.Recipe;
+import com.hong.smartref.data.entity.RecipeSave;
+import com.hong.smartref.data.entity.User;
 import com.hong.smartref.data.enumerate.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -9,6 +11,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Collection;
 import java.util.List;
 
 public interface RecipeRepository extends JpaRepository<Recipe, Long>{
@@ -54,4 +57,11 @@ AND (:searchValue IS NULL OR r.title LIKE CONCAT('%', :searchValue, '%'))
             @Param("searchValue") String searchValue,
             Pageable pageable
     );
+
+    @Query("""
+SELECT distinct r FROM Recipe r
+JOIN r.recipeSaveList rs
+WHERE rs.user = :user
+""")
+    Page<Recipe> findByRecipeSaveUser(@Param("user") User user, Pageable pageable);
 }
