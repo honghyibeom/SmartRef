@@ -5,6 +5,7 @@ import com.hong.smartref.data.entity.StorageType;
 import com.hong.smartref.data.entity.StorageUser;
 import com.hong.smartref.data.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -18,7 +19,16 @@ public interface StorageUserRepository extends JpaRepository<StorageUser, Long> 
 
     Optional<StorageUser> findTopByStorageOrderByJoinedAtAsc(Storage storage);
 
+
     List<StorageUser> findByUser(User user);
+
+    @Query("""
+            select su from StorageUser su
+            join fetch su.storage s
+            join fetch s.storageType
+            where su.user = :user
+            """)
+    List<StorageUser> findByUserWithStorage(User user);
 
     Optional<StorageUser> findByUserAndStorage_StorageType(User user, StorageType storageStorageType);
 }

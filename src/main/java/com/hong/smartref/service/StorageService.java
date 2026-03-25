@@ -163,7 +163,9 @@ public class StorageService {
         User user = userRepository.findByEmail(userDetails.getEmail())
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_EXIST_USER));
 
-        List<StorageUser> storageUserList = storageUserRepository.findByUser(user);
+        // 🔥 fetch join 적용
+        List<StorageUser> storageUserList =
+                storageUserRepository.findByUserWithStorage(user);
 
         if (storageUserList.isEmpty()) {
             throw new CustomException(ErrorCode.NOT_EXIST_STORAGE_USER);
@@ -177,14 +179,17 @@ public class StorageService {
 
         // StorageLocation 을 전부 조회
         List<StorageLocation> allLocations =
-                storageLocationRepository.findByStorageTypeIn(storageTypes);
+                storageLocationRepository.findByStorageTypeInFetch(storageTypes);
 
         //Map으로 묶는다.
-        Map<StorageType, List<Long>> locationMap =
+        Map<Long, List<Long>> locationMap =
                 allLocations.stream()
                         .collect(Collectors.groupingBy(
-                                StorageLocation::getStorageType,
-                                Collectors.mapping(sl -> sl.getLocation().getLocationId(), Collectors.toList())
+                                sl -> sl.getStorageType().getStorageTypeId(),
+                                Collectors.mapping(
+                                        sl -> sl.getLocation().getLocationId(),
+                                        Collectors.toList()
+                                )
                         ));
 
 
@@ -195,7 +200,10 @@ public class StorageService {
 
             // storageType으로 묶는다
             List<Long> locationIds =
-                    locationMap.getOrDefault(storage.getStorageType(), new ArrayList<>());
+                    locationMap.getOrDefault(
+                            storage.getStorageType().getStorageTypeId(),
+                            new ArrayList<>()
+                    );
 
             StorageInfo storageInfo = StorageInfo.builder()
                     .storageColor(storage.getStorageColor())
@@ -275,7 +283,7 @@ public class StorageService {
                         oriFood.getUnit(),
                         oriFood.getExpiredAt(),
                         nextLocation,
-                        oriFood.getImageUrl(),
+                        null,
                         null,
                         oriFood.getMasterId()
                 );

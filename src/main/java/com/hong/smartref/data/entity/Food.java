@@ -115,7 +115,7 @@ public class Food {
         if (location != null) this.location = location;
         if (amountType != null) this.amountType = amountType;
         if (memo != null) this.memo = memo;
-        if (imageUrl != null) this.imageUrl = imageUrl;
+        this.imageUrl = imageUrl;
     }
 
 }

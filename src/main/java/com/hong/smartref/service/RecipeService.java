@@ -17,6 +17,8 @@ import org.springframework.web.client.RestClient;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -63,11 +65,11 @@ public class RecipeService {
             Recipe result = recipeRepository.save(newRecipe);
             recipeIds.add(result.getRecipeId());
 
-            recipeSaveRepository.save(
-                    RecipeSave.builder()
-                            .recipe(result)
-                            .user(userDetails.getUser())
-                            .build());
+//            recipeSaveRepository.save(
+//                    RecipeSave.builder()
+//                            .recipe(result)
+//                            .user(userDetails.getUser())
+//                            .build());
 
             List<RecipeIngredient> ingredients = new ArrayList<>();
             for (IngredientsDTO ingredient  : recipeRequest.getIngredients()) {
@@ -296,7 +298,6 @@ public class RecipeService {
         PageRequest pageRequest = PageRequest.of(page, 5);
 
         List<Long> masterIds = null;
-
         if (dto.getIngredients() != null && !dto.getIngredients().isEmpty()) {
             masterIds = dto.getIngredients().stream()
                     .map(IngredientsDTO::getMasterId)
@@ -304,10 +305,10 @@ public class RecipeService {
         }
 
         String searchValue = dto.getSearchValue();
-
         if (searchValue == null || searchValue.isBlank()) {
             searchValue = "";
         }
+
         //레시피를 검색한다.
         Page<Recipe> recipes = recipeRepository.searchRecipes(
                 masterIds,
@@ -329,32 +330,59 @@ public class RecipeService {
                 searchValue,
                 pageRequest
         );
+
         if (recipes.isEmpty()) {
             throw new CustomException(ErrorCode.NOT_EXIST_RECIPE);
         }
+        // 2️⃣ recipeId 추출
+        List<Long> recipeIds = recipes.stream()
+                .map(Recipe::getRecipeId)
+                .toList();
+
+        // 3️⃣ ingredients 한방 조회
+        List<RecipeIngredient> ingredientList =
+                recipeIngredientRepository.findByRecipeIds(recipeIds);
+
+        // 4️⃣ steps 한방 조회
+        List<RecipeStep> stepList =
+                recipeStepRepository.findByRecipeIds(recipeIds);
+
+        // 5️⃣ Map 구성 (🔥 핵심)
+        Map<Long, List<RecipeIngredient>> ingredientMap =
+                ingredientList.stream()
+                        .collect(Collectors.groupingBy(
+                                ri -> ri.getRecipe().getRecipeId()
+                        ));
+
+        Map<Long, List<RecipeStep>> stepMap =
+                stepList.stream()
+                        .collect(Collectors.groupingBy(
+                                rs -> rs.getRecipe().getRecipeId()
+                        ));
 
         List<RecipeInfo> recipeInfoList = new ArrayList<>();
-        for (Recipe recipe : recipes) {
-            List<IngredientsDTO> ingredients = new ArrayList<>();
-            for (RecipeIngredient ingredient : recipe.getIngredients()) {
-                IngredientsDTO ingredientsDTO = IngredientsDTO
-                        .builder()
-                        .unit(ingredient.getUnit())
-                        .quantity(ingredient.getQuantity())
-                        .amountType(ingredient.getAmountType())
-                        .masterId(ingredient.getMasterId())
-                        .build();
-                ingredients.add(ingredientsDTO);
-            }
 
-            List<StepsDTO> steps = new ArrayList<>();
-            for (RecipeStep step : recipe.getSteps()) {
-                StepsDTO stepsDTO = StepsDTO.builder()
-                        .imageUrl(step.getImageUrl())
-                        .way(step.getWay())
-                        .build();
-                steps.add(stepsDTO);
-            }
+        for (Recipe recipe : recipes) {
+
+            List<IngredientsDTO> ingredients =
+                    ingredientMap.getOrDefault(recipe.getRecipeId(), List.of())
+                            .stream()
+                            .map(ingredient -> IngredientsDTO.builder()
+                                    .unit(ingredient.getUnit())
+                                    .quantity(ingredient.getQuantity())
+                                    .amountType(ingredient.getAmountType())
+                                    .masterId(ingredient.getMasterId())
+                                    .build())
+                            .toList();
+
+            List<StepsDTO> steps =
+                    stepMap.getOrDefault(recipe.getRecipeId(), List.of())
+                            .stream()
+                            .map(step -> StepsDTO.builder()
+                                    .imageUrl(step.getImageUrl())
+                                    .way(step.getWay())
+                                    .build())
+                            .toList();
 
             RecipeInfo recipeInfo = RecipeInfo.builder()
                     .title(recipe.getTitle())
