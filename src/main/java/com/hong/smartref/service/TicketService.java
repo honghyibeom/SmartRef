@@ -4,10 +4,12 @@ import com.hong.smartref.config.security.UserDetailsImpl;
 import com.hong.smartref.data.dto.ticket.TicketValueRequest;
 import com.hong.smartref.data.dto.ticket.TicketValueResponse;
 import com.hong.smartref.data.entity.TicketLog;
+import com.hong.smartref.data.entity.User;
 import com.hong.smartref.data.enumerate.TicketStatus;
 import com.hong.smartref.exception.CustomException;
 import com.hong.smartref.exception.ErrorCode;
 import com.hong.smartref.repository.TicketLogRepository;
+import com.hong.smartref.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
@@ -75,6 +77,8 @@ public class TicketService {
     
             return 1
         """;
+    private final UserRepository userRepository;
+
     /**
      * 1️⃣ 티켓 생성
      */
@@ -108,10 +112,10 @@ public class TicketService {
     /**
      * 2️⃣ 티켓 검증 (issue → inProgress)
      */
-    public void validateTicket(TicketValueRequest request, UserDetailsImpl userDetails) {
+    public void validateTicket(TicketValueRequest request) {
         String key = PREFIX + request.getTicketValue();
 
-        String email = userDetails.getEmail().toLowerCase();
+        String email = request.getEmail().toLowerCase();
         String userKey = "user:" + email + ":tickets";
 
         Boolean isMember = redisTemplate.opsForSet().isMember(userKey, request.getTicketValue());
@@ -135,13 +139,13 @@ public class TicketService {
      * 3️⃣ 완료 처리 (SUCCESS / FAILED)
      */
     @Transactional
-    public void completeTicket(TicketValueRequest request,UserDetailsImpl userDetails) {
+    public void completeTicket(TicketValueRequest request) {
 
         String code = request.getTicketValue();
         TicketStatus status = request.getStatus();
 
         String key = PREFIX + code;
-        String email = userDetails.getEmail().toLowerCase();
+        String email = request.getEmail().toLowerCase();
         String userKey = "user:" + email + ":tickets";
 
         Object current = redisTemplate.opsForValue().get(key);
@@ -164,8 +168,11 @@ public class TicketService {
         // 2️⃣ Set에서 제거 (핵심)
         redisTemplate.opsForSet().remove(userKey, code);
 
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_EXIST_USER));
+
         // 3️⃣ 로그 저장 (추천)
-        TicketLog ticketLog = TicketLog.create(userDetails.getUser(),code, status.getValue());
+        TicketLog ticketLog = TicketLog.create(user, code, status.getValue());
         ticketLogRepository.save(ticketLog);
     }
 

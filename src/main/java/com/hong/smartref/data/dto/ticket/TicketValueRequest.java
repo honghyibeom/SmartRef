@@ -13,5 +13,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class TicketValueRequest {
     private TicketStatus status;
+    private String email;
     private String ticketValue;
 }

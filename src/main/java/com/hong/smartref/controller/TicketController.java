@@ -27,9 +27,8 @@ public class TicketController {
 
     @Operation(summary = "티켓 사용 가능 여부", description = "티켓 사용 가능 여부")
     @PostMapping("/validate-and-lock")
-    public ResponseEntity<ApiResponse<Void>> validateTicket(@RequestBody TicketValueRequest ticketValueRequest,
-                                                                           @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        ticketService.validateTicket(ticketValueRequest ,userDetails);
+    public ResponseEntity<ApiResponse<Void>> validateTicket(@RequestBody TicketValueRequest ticketValueRequest) {
+        ticketService.validateTicket(ticketValueRequest);
         return ResponseEntity.ok(
                 ApiResponse.success("티켓 검증 성공")
         );
@@ -37,9 +36,8 @@ public class TicketController {
 
     @Operation(summary = "티켓 사용 완료후 로그 저장", description = "티켓 사용 완료")
     @PostMapping("/update")
-    public ResponseEntity<ApiResponse<Void>> updateTicket (@RequestBody TicketValueRequest request,
-                                                                          @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        ticketService.completeTicket(request,userDetails);
+    public ResponseEntity<ApiResponse<Void>> updateTicket (@RequestBody TicketValueRequest request) {
+        ticketService.completeTicket(request);
         return ResponseEntity.ok(
                 ApiResponse.success("티켓 사용 완료")
         );
