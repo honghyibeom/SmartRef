@@ -73,6 +73,9 @@ public class RecipeService {
 
             List<RecipeIngredient> ingredients = new ArrayList<>();
             for (IngredientsDTO ingredient  : recipeRequest.getIngredients()) {
+                if (ingredient.getAmountType() == null) {
+                    throw new CustomException(ErrorCode.EMPTY_AMOUNT_TYPE);
+                }
                 ingredients.add(
                         RecipeIngredient.builder()
                                 .masterId(ingredient.getMasterId())

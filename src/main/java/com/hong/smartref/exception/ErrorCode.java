@@ -57,6 +57,7 @@ public enum ErrorCode {
     BUCKET_FULL("버킷 100GB 초과 관리자 문의", HttpStatus.BAD_REQUEST),
     EXPIRED_CERT_CODE("이메일 인증코드 시간 초과", HttpStatus.BAD_REQUEST),
     NO_AUTHORITY("주인이 아닙니다.", HttpStatus.BAD_REQUEST),
+    EMPTY_AMOUNT_TYPE("amountType is required", HttpStatus.BAD_REQUEST),
     INVALID_IMAGE_REQUEST("잘못된 이미지 요청.", HttpStatus.BAD_REQUEST),
     TO_MANY_TICKET("티켓은 최대 3개까지 발급 가능합니다.", HttpStatus.BAD_REQUEST),
     INVALID_STATUS("티켓 상태가 이상합니다.", HttpStatus.BAD_REQUEST),

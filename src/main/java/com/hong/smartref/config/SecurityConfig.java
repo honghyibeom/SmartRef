@@ -63,7 +63,9 @@ public class SecurityConfig {
                                 "/error",
                                 "/h2-console/**",
                                 "/swagger-ui/**",
-                                "/v3/api-docs/**"
+                                "/v3/api-docs/**",
+                                "/api/ticket/validate-and-lock",
+                                "/api/ticket/update"
                         ).permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(new JwtFilter(jwtTokenUtil), UsernamePasswordAuthenticationFilter.class)
@@ -99,7 +101,9 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.OPTIONS,"/**").permitAll()
                         .requestMatchers(
                                 "/api/auth/**",
-                                "/error"
+                                "/error",
+                                "/api/ticket/validate-and-lock",
+                                "/api/ticket/update"
                         ).permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(new JwtFilter(jwtTokenUtil), UsernamePasswordAuthenticationFilter.class)

@@ -64,7 +64,7 @@ public class UserService {
         storageRepository.save(storage);
 
         //쓰레기통 storage 생성
-        StorageType storageTrashType = storageTypeRepository.findByStorageTypeId(20L)
+        StorageType storageTrashType = storageTypeRepository.findByStorageTypeEnum(StorageTypeEnum.TRASH)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_EXIST_STORAGE_TYPE));
         Storage trashStorage = Storage.create(
                 DefaultStorageName.getRandomStorageName(),

@@ -27,6 +27,7 @@ public class RecipeIngredient {
     private int quantity;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private AmountType amountType;
 
 }
