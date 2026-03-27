@@ -7,6 +7,7 @@ import lombok.Data;
 @Builder
 public class UserInfo {
     private String username;
+    private String email;
     private String color;
     private Boolean isPremium;
 }

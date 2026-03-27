@@ -211,6 +211,7 @@ public class UserService {
     public UserInfo getUserInfo(UserDetailsImpl userDetails) {
         return UserInfo.builder()
                 .color(userDetails.getUser().getNicknameColor())
+                .email(userDetails.getEmail())
                 .isPremium(userDetails.getUser().getIsPremium())
                 .username(userDetails.getUser().getNickname())
                 .build();
