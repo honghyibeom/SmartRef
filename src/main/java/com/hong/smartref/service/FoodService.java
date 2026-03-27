@@ -26,7 +26,7 @@ public class FoodService {
     private final LocationRepository locationRepository;
     private final StorageRepository storageRepository;
     private final S3ImageService s3ImageService;
-    private final RestClient imageAnalyzeRestClient;
+    private final RestClient recipeRestClient;
     private final ObjectMapper objectMapper;
 
     //food 생성
@@ -187,7 +187,7 @@ public class FoodService {
                         .build();
 
         // 3️⃣ 외부 API 호출
-        String rawResponse = imageAnalyzeRestClient.post()
+        String rawResponse = recipeRestClient.post()
                 .uri("/imageAnalyzied")
                 .body(externalRequest)
                 .retrieve()

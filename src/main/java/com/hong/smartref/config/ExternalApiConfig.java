@@ -7,6 +7,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.client.RestClient;
 
+import java.util.Map;
+
 @Configuration
 public class ExternalApiConfig {
     @Bean
@@ -16,6 +18,19 @@ public class ExternalApiConfig {
         return RestClient.builder()
                 .baseUrl("https://w4bwrqmrv6.execute-api.ap-northeast-2.amazonaws.com/stageAitracker") // 외부 API 기본 주소
                 .defaultHeader("x-api-key", apiKey)
+                .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .build();
+    }
+
+    @Bean
+    public RestClient googleRestClient(
+            @Value("${google.api.key}") String apiKey
+    ) {
+        return RestClient.builder()
+                .baseUrl("https://maps.googleapis.com")
+                .defaultUriVariables(Map.of(
+                        "key", apiKey
+                ))
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .build();
     }
