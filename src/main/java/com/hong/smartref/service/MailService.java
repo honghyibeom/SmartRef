@@ -65,7 +65,7 @@ public class MailService {
 
     private String generateCode() {
         SecureRandom random = new SecureRandom();
-        int number = random.nextInt(900000) + 100000;
+        int number = random.nextInt(90000) + 10000;
         return String.valueOf(number);
     }
 }
